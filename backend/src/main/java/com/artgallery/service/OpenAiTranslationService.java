@@ -19,7 +19,7 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class OpenAiTranslationService implements TranslationService {
 
-    private static final String DEFAULT_BASE_URL = "https://api.openai.com/v1";
+    private static final String DEFAULT_BASE_URL = "https://api.groq.com/openai/v1";
 
     private final ObjectMapper objectMapper;
     private final HttpClient httpClient = HttpClient.newBuilder()
@@ -29,7 +29,7 @@ public class OpenAiTranslationService implements TranslationService {
     @Value("${openai.api-key:}")
     private String apiKey;
 
-    @Value("${openai.translation-model:gpt-5-mini}")
+    @Value("${openai.translation-model:llama-3.1-8b-instant}")
     private String translationModel;
 
     @Value("${openai.base-url:" + DEFAULT_BASE_URL + "}")
