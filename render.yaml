@@ -1,8 +1,7 @@
 services:
   - type: web
     name: artgallery-backend
-    env: java
+    env: docker
     rootDir: backend
-    buildCommand: mvn -q -DskipTests package
-    startCommand: java -jar target/backend-0.0.1-SNAPSHOT.jar
+    dockerfilePath: ./Dockerfile
     plan: free
