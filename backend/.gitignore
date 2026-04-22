@@ -1,0 +1,10 @@
+target/
+.mvn/
+*.class
+*.jar
+*.war
+.env
+application-local.properties
+.DS_Store
+.idea/
+*.iml

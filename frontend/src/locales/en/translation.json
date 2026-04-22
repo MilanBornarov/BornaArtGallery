@@ -1,0 +1,253 @@
+{
+  "common": {
+    "brand": "Borna Art",
+    "close": "Close",
+    "save": "Save",
+    "saved": "Saved",
+    "contactToBuy": "Contact to Buy",
+    "viewAll": "View all",
+    "browseGallery": "Browse the Gallery",
+    "exploreGallery": "Explore Gallery",
+    "featured": "Featured",
+    "available": "Available",
+    "sold": "Sold",
+    "all": "All",
+    "loading": "Please wait...",
+    "chooseImage": "Choose Image",
+    "previewStyle": "Preview style",
+    "cancel": "Cancel",
+    "search": "Search",
+    "status": "Status",
+    "categories": "Categories",
+    "category": "Category",
+    "title": "Title",
+    "description": "Description",
+    "year": "Year",
+    "image": "Image",
+    "width": "Width",
+    "height": "Height",
+    "dimensions": "Dimensions",
+    "works": "works",
+    "work": "work",
+    "noImageSelected": "No image selected",
+    "uncategorised": "Uncategorised"
+  },
+  "nav": {
+    "home": "Home",
+    "gallery": "Gallery",
+    "about": "About",
+    "contact": "Contact",
+    "dashboard": "Dashboard",
+    "favorites": "Favorites",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "toggleMenu": "Toggle menu",
+    "language": "Language"
+  },
+  "footer": {
+    "copyright": "BORNA ART"
+  },
+  "home": {
+    "heroEmpty": "No featured works yet",
+    "welcome": "Welcome",
+    "intro": "A focused gallery experience for one artist. Explore available and sold works, save your favourites, and contact Borna directly when you are ready to buy.",
+    "collection": "Collection",
+    "recentWorks": "Recent Works",
+    "noArtworks": "No artworks yet",
+    "checkBackSoon": "Check back soon.",
+    "saveWorksTitle": "Save the works you love.",
+    "saveWorksBody": "Create an account to keep favourites and let the admin manage the gallery from one place."
+  },
+  "gallery": {
+    "title": "Borna Art Gallery",
+    "intro": "Browse original work by a single artist. Use the filters to explore categories, status, featured selections, frame previews, and dimensions.",
+    "searchPlaceholder": "Search by title or category...",
+    "statusAndFrames": "Status & Frames",
+    "featuredOnly": "Featured",
+    "frames": "Frames",
+    "noArtworks": "No artworks found",
+    "adjustFilters": "Try adjusting your search or filter.",
+    "allStatuses": "All Statuses",
+    "allCategories": "All Categories",
+    "dimensionsTitle": "Dimensions Filter",
+    "dimensionsHelp": "Choose orientation alone or enter dimensions, then apply when you are ready.",
+    "exact": "Exact",
+    "widthRange": "Width range",
+    "heightRange": "Height range",
+    "min": "Min",
+    "max": "Max",
+    "orientation": "Orientation",
+    "orientationAll": "All",
+    "orientationSquare": "Square",
+    "orientationPortrait": "Portrait",
+    "orientationLandscape": "Landscape",
+    "resetFilters": "Reset Filters",
+    "apply": "Apply",
+    "applyFilters": "Apply Filters",
+    "cmPlaceholder": "cm"
+  },
+  "favorites": {
+    "signInPrompt": "Sign in to see your favorites",
+    "myCollection": "My Collection",
+    "savedWorks": "Saved Works",
+    "emptyTitle": "Nothing saved yet",
+    "emptyBody": "Browse the gallery and click ♡ to save artworks here."
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Register",
+    "welcomeBack": "Welcome Back",
+    "createAccount": "Create Account",
+    "loginBody": "Sign in to manage favourites or access the admin dashboard.",
+    "registerBody": "Register to save favourite artworks.",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "createAccountButton": "Create Account",
+    "backToGallery": "Back to gallery",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordLength": "Password must be at least 10 characters.",
+    "requestFailed": "Request failed."
+  },
+  "artwork": {
+    "removeFavorite": "Remove from favorites",
+    "addFavorite": "Add to favorites",
+    "artistLine": "Borna Art",
+    "saveAction": "Save",
+    "savedAction": "Saved",
+    "size": "Size",
+    "sizeValue": "{{width}} × {{height}} cm"
+  },
+  "framePreview": {
+    "overline": "Frames",
+    "title": "Frame Preview",
+    "intro": "Upload an image and preview it inside selected frame styles.",
+    "uploadPrompt": "Upload an image to preview frame styles.",
+    "classicGold": "Classic Gold",
+    "blackModern": "Black Modern",
+    "galleryWhite": "Gallery White",
+    "walnutWood": "Walnut Wood",
+    "floatingShadow": "Floating Shadow",
+    "framePreviewAlt": "Frame preview"
+  },
+  "admin": {
+    "admin": "Admin",
+    "dashboardTitle": "Borna Art Dashboard",
+    "backToDashboard": "Back to dashboard",
+    "uploadNewArtwork": "Upload New Artwork",
+    "editArtwork": "Edit Artwork",
+    "uploadArtwork": "Upload Artwork",
+    "inCollection": "{{count}} {{label}} in collection",
+    "searchPlaceholder": "Search artworks...",
+    "noArtworks": "No artworks found",
+    "edit": "Edit",
+    "feature": "Feature",
+    "featured": "Featured",
+    "delete": "Delete",
+    "deleteQuestion": "Delete artwork?",
+    "deleteBody": "This will also remove the image from Cloudinary.",
+    "yesDelete": "Yes, delete",
+    "artworkUploaded": "Artwork uploaded",
+    "artworkUpdated": "Artwork updated",
+    "artworkDeleted": "Artwork deleted",
+    "featuredUpdated": "Featured flag updated",
+    "statusUpdated": "Status updated",
+    "replaceImageOptional": "Replace Image (optional)",
+    "imageRequired": "Image *",
+    "clickToSelect": "Click to select image",
+    "titleRequired": "Title is required.",
+    "pleaseSelectImage": "Please select an image.",
+    "somethingWentWrong": "Something went wrong.",
+    "artworkTitlePlaceholderMk": "Artwork title in Macedonian",
+    "selectCategory": "-- Select Category --",
+    "descriptionPlaceholderMk": "Describe the artwork in Macedonian... (line breaks are preserved)",
+    "markAsFeatured": "Mark as Featured",
+    "featuredHelp": "Featured works appear in the homepage carousel.",
+    "toggleFeatured": "Toggle featured",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "dimensionsRequired": "Width and height are required.",
+    "dimensionsNonNegative": "Width and height must be non-negative."
+  },
+  "carousel": {
+    "featuredWork": "Featured Work",
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "goToSlide": "Go to slide {{index}}"
+  },
+  "about": {
+    "overline": "Artist",
+    "title": "About Borna Art",
+    "photoAlt": "Artist portrait",
+    "paragraph1": "BORNA (Suzana Bornarova), born in 1974 in Skopje, is an abstract artist whose work is defined by intuition, emotion, and bold expression.",
+    "paragraph2": "Raised in a family of painters, her connection to art began early and evolved into a deeply personal visual language. Today, alongside her academic role as a professor at the Faculty of Philosophy at the University “St. Cyril and Methodius” in Skopje, she continues to explore painting as a form of freedom - of thought, feeling, and spirit.",
+    "paragraph3": "Her work is characterized by vibrant color contrasts, dynamic textures, and expressive movement. Using acrylics, palette knife techniques, structural paste, and impasto, BORNA creates layered compositions that balance abstraction with subtle figurative elements.",
+    "paragraph4": "Each piece is created spontaneously, without sketches - guided purely by instinct.",
+    "paragraph5": "Every BORNA artwork is an original. No copies. No reproductions. Just one-of-a-kind expressions - impossible to replicate, and instantly recognizable.",
+    "viewGallery": "View Gallery",
+    "studioOverline": "Atelier",
+    "studioTitle": "Inside the atelier",
+    "statementOverline": "Artist Statement",
+    "statementTitle": "Materials, care, and originality",
+    "statementParagraph1": "Уметничките дела на БОРНА не се принтови! БОРНА користи високо-квалитетни акрилни бои, медиуми, структурни пасти како и завршни лакови од американско, германско, полско, англиско, холандско и италијанско производство за рачно и креативно создавање на уметничките дела кои се единствени (досега не е насликана ниту една слика дупликат). За заштита од надворешни влијанија и сончева светлина, односно за лесна одржливост и долготрајност, секоја слика се премачкува со завршен лак – фиксатор.",
+    "statementParagraph2": "Уметничките дела се сликаат на квалитетни платна 100% памук затегнати на дрвен рам или панел од италијанско, грчко, српско и домашно потекло. По врамувањето на сликата во дрвени рамки по Ваш избор, внимателно се пакува најпрво во фолија со меурчиња, а потоа и во картон заради безбедна достава по карго до Вашиот дом. Досега ниту една слика на БОРНА не е оштетена при транспорт!",
+    "gallery": {
+      "colors": "Colors",
+      "tools": "Tools",
+      "canvases": "Canvases",
+      "studio": "Atelier"
+    },
+    "galleryAlt": {
+      "colors": "Colors placeholder",
+      "tools": "Tools placeholder",
+      "canvases": "Canvases placeholder",
+      "studio": "Atelier details"
+    },
+    "processOverline": "Process Steps",
+    "processTitle": "From concept to finished canvas",
+    "processIntro": "Switch between three real five-step painting sequences from the atelier.",
+    "processExamples": {
+      "example1": {
+        "label": "Example 1",
+        "steps": {
+          "step1": { "title": "Palette", "description": "Choosing the dominant colors and mood of the composition.", "alt": "Palette selection placeholder" },
+          "step2": { "title": "Surface", "description": "Preparing the canvas with texture and the first base layers.", "alt": "Canvas preparation placeholder" },
+          "step3": { "title": "Movement", "description": "Building gesture, motion, and balance across the composition.", "alt": "Movement stage placeholder" },
+          "step4": { "title": "Depth", "description": "Adding structural paste, contrast, and layered highlights.", "alt": "Depth stage placeholder" },
+          "step5": { "title": "Finish", "description": "Final review, detailing, and protective varnish application.", "alt": "Finished artwork placeholder" }
+        }
+      },
+      "example2": {
+        "label": "Example 2",
+        "steps": {
+          "step1": { "title": "Reference", "description": "Collecting emotional cues, tones, and visual inspiration.", "alt": "Reference stage placeholder" },
+          "step2": { "title": "Sketchless Start", "description": "Beginning directly on canvas without a preparatory drawing.", "alt": "Sketchless start placeholder" },
+          "step3": { "title": "Texture", "description": "Working the knife and paste to create tactile surfaces.", "alt": "Texture stage placeholder" },
+          "step4": { "title": "Contrast", "description": "Balancing bold accents with calmer negative space.", "alt": "Contrast stage placeholder" },
+          "step5": { "title": "Seal", "description": "Sealing the final painting for longevity and safe display.", "alt": "Sealing stage placeholder" }
+        }
+      },
+      "example3": {
+        "label": "Example 3",
+        "steps": {
+          "step1": { "title": "Impulse", "description": "Starting from instinct and emotional rhythm.", "alt": "Impulse stage placeholder" },
+          "step2": { "title": "Layer One", "description": "Establishing broad forms and key tonal anchors.", "alt": "Layer one placeholder" },
+          "step3": { "title": "Layer Two", "description": "Introducing line, edge, and figurative tension.", "alt": "Layer two placeholder" },
+          "step4": { "title": "Refinement", "description": "Adjusting color relationships and compositional flow.", "alt": "Refinement stage placeholder" },
+          "step5": { "title": "Presentation", "description": "Preparing the work for framing, packing, and delivery.", "alt": "Presentation stage placeholder" }
+        }
+      }
+    }
+  },
+  "contact": {
+    "overline": "Contact",
+    "title": "Borna Art Contact",
+    "intro": "Reach out through social media or phone for artwork inquiries, commissions, or exhibition conversations.",
+    "openLink": "Open link",
+    "items": {
+      "facebook": { "label": "Facebook" },
+      "instagram": { "label": "Instagram" },
+      "phone": { "label": "Phone" }
+    }
+  }
+}
