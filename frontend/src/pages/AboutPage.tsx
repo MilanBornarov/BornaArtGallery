@@ -5,6 +5,7 @@ import ImageLightbox from '../components/ImageLightbox';
 import ProcessSteps from '../components/ProcessSteps';
 import RotatingImageCard from '../components/RotatingImageCard';
 import { useLanguage } from '../context/LanguageContext';
+import type { LightboxPayload } from '../components/ImageLightbox';
 
 const atelierGallery = [
   {
@@ -27,11 +28,7 @@ const atelierGallery = [
 
 export default function AboutPage() {
   const { t } = useLanguage();
-  const [expandedImage, setExpandedImage] = useState<{
-    src: string;
-    alt: string;
-    title: string;
-  } | null>(null);
+  const [lightbox, setLightbox] = useState<LightboxPayload | null>(null);
 
   return (
     <main className="page-shell max-w-6xl mx-auto py-12">
@@ -80,13 +77,13 @@ export default function AboutPage() {
           <h2 className="font-serif text-3xl text-white mt-2">{t('about.studioTitle')}</h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {atelierGallery.map((item) => (
             <RotatingImageCard
               key={item.key}
               images={item.images}
               label={t(`about.gallery.${item.key}`)}
-              onOpen={(src, alt, title) => setExpandedImage({ src, alt, title })}
+              onOpen={setLightbox}
             />
           ))}
         </div>
@@ -103,14 +100,15 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <ProcessSteps onOpenImage={(src, alt, title) => setExpandedImage({ src, alt, title })} />
+      <ProcessSteps onOpenImage={setLightbox} />
 
-      {expandedImage ? (
+      {lightbox ? (
         <ImageLightbox
-          imageSrc={expandedImage.src}
-          imageAlt={expandedImage.alt}
-          title={expandedImage.title}
-          onClose={() => setExpandedImage(null)}
+          items={lightbox.items}
+          initialIndex={lightbox.initialIndex}
+          galleryTitle={lightbox.galleryTitle}
+          showDetails={false}
+          onClose={() => setLightbox(null)}
         />
       ) : null}
     </main>

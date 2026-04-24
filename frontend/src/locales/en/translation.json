@@ -56,7 +56,10 @@
     "noArtworks": "No artworks yet",
     "checkBackSoon": "Check back soon.",
     "saveWorksTitle": "Save the works you love.",
-    "saveWorksBody": "Create an account to keep favourites and let the admin manage the gallery from one place."
+    "saveWorksBody": "Create an account to keep favourites and let the admin manage the gallery from one place.",
+    "saveWorksCtaGuest": "Register or sign in",
+    "saveWorksCtaUser": "View saved works",
+    "saveWorksCtaAdmin": "Open dashboard"
   },
   "gallery": {
     "title": "Borna Art Gallery",
@@ -189,8 +192,8 @@
     "studioTitle": "Inside the atelier",
     "statementOverline": "Artist Statement",
     "statementTitle": "Materials, care, and originality",
-    "statementParagraph1": "Уметничките дела на БОРНА не се принтови! БОРНА користи високо-квалитетни акрилни бои, медиуми, структурни пасти како и завршни лакови од американско, германско, полско, англиско, холандско и италијанско производство за рачно и креативно создавање на уметничките дела кои се единствени (досега не е насликана ниту една слика дупликат). За заштита од надворешни влијанија и сончева светлина, односно за лесна одржливост и долготрајност, секоја слика се премачкува со завршен лак – фиксатор.",
-    "statementParagraph2": "Уметничките дела се сликаат на квалитетни платна 100% памук затегнати на дрвен рам или панел од италијанско, грчко, српско и домашно потекло. По врамувањето на сликата во дрвени рамки по Ваш избор, внимателно се пакува најпрво во фолија со меурчиња, а потоа и во картон заради безбедна достава по карго до Вашиот дом. Досега ниту една слика на БОРНА не е оштетена при транспорт!",
+    "statementParagraph1": "BORNA's artworks are never printed. She works with high-quality acrylic paints, mediums, structural pastes, and finishing varnishes sourced from American, German, Polish, English, Dutch, and Italian manufacturers to create original one-of-a-kind pieces. To protect each painting from sunlight and other outside influences, and to ensure easier care and long-term durability, every work is sealed with a final protective varnish.",
+    "statementParagraph2": "The paintings are created on premium 100% cotton canvas stretched on wooden frames or panels of Italian, Greek, Serbian, and local origin. After framing, each artwork is carefully packed first in bubble wrap and then in cardboard so it can be delivered safely to your home. To date, not a single BORNA painting has been damaged in transit.",
     "gallery": {
       "colors": "Colors",
       "tools": "Tools",
@@ -245,9 +248,30 @@
     "intro": "Reach out through social media or phone for artwork inquiries, commissions, or exhibition conversations.",
     "openLink": "Open link",
     "items": {
-      "facebook": { "label": "Facebook" },
-      "instagram": { "label": "Instagram" },
-      "phone": { "label": "Phone" }
+      "facebook": {
+        "label": "Facebook",
+        "title": "Facebook",
+        "cta": "Facebook",
+        "description": "Open the official Facebook page and contact the artist there."
+      },
+      "instagram": {
+        "label": "Instagram",
+        "title": "Instagram",
+        "cta": "Instagram",
+        "description": "Visit Instagram for recent works, studio moments, and direct messages."
+      },
+      "email": {
+        "label": "Email",
+        "title": "Email",
+        "cta": "Email",
+        "description": "Send an email for artwork questions, commissions, and delivery details."
+      },
+      "phone": {
+        "label": "Phone",
+        "title": "Contact the artist",
+        "cta": "Contact the artist",
+        "description": "Call directly for availability, framing, and purchase inquiries."
+      }
     }
   }
 }

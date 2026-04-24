@@ -62,13 +62,17 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       if (currentlyFavorite) {
         await apiRemoveFavorite(artworkId);
       } else {
-        await apiAddFavorite(artworkId);
-        await reload();
+        const response = await apiAddFavorite(artworkId);
+        setFavorites((current) =>
+          current.some((favorite) => favorite.artwork.id === artworkId)
+            ? current
+            : [response.data, ...current],
+        );
       }
     } catch {
       setFavorites(previousFavorites);
     }
-  }, [favorites, isLoggedIn, reload]);
+  }, [favorites, isLoggedIn]);
 
   const favoriteIds = useMemo(
     () => new Set(favorites.map((favorite) => favorite.artwork.id)),

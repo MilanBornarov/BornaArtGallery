@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import type { Artwork, Favorite } from '../types';
+import type { Artwork } from '../types';
 import ArtworkCard from '../components/ArtworkCard';
 import ArtworkModal from '../components/ArtworkModal';
 import { GridSkeleton } from '../components/LoadingSkeleton';
@@ -11,13 +11,8 @@ import { useFavorites } from '../hooks/useFavorites';
 export default function FavoritesPage() {
   const { isLoggedIn } = useAuth();
   const { t } = useLanguage();
-  const { favorites: sharedFavorites, loading } = useFavorites();
-  const [favorites, setFavorites] = useState<Favorite[]>([]);
+  const { favorites, loading } = useFavorites();
   const [selected, setSelected] = useState<Artwork | null>(null);
-
-  useEffect(() => {
-    setFavorites(sharedFavorites);
-  }, [sharedFavorites]);
 
   if (!isLoggedIn) {
     return (
@@ -57,7 +52,7 @@ export default function FavoritesPage() {
       )}
 
       {selected && (
-        <ArtworkModal artwork={selected} onClose={() => setSelected(null)} />
+        <ArtworkModal artwork={selected} onClose={() => setSelected(null)} hideNavbar />
       )}
     </main>
   );

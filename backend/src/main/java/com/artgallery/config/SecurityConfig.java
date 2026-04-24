@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -49,6 +51,11 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
+                .headers(headers -> headers
+                        .contentTypeOptions(Customizer.withDefaults())
+                        .frameOptions(frame -> frame.deny())
+                        .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
@@ -77,8 +84,21 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        List<String> allowedOrigins = appProperties.getAllowedOrigins().stream()
+                .map(String::trim)
+                .filter(origin -> !origin.isBlank())
+                .toList();
+
+        if (allowedOrigins.isEmpty()) {
+            throw new IllegalStateException("At least one allowed origin must be configured.");
+        }
+
+        if (allowedOrigins.contains("*")) {
+            throw new IllegalStateException("Wildcard origins are not allowed when credentials are enabled.");
+        }
+
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(appProperties.getAllowedOrigins());
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of(
                 HttpHeaders.AUTHORIZATION,

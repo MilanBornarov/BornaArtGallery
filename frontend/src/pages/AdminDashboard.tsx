@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import {
   apiDeleteArtwork,
   apiGetArtworks,
@@ -35,6 +35,7 @@ export default function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'AVAILABLE' | 'SOLD'>('ALL');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [framesOpen, setFramesOpen] = useState(false);
+  const deferredSearch = useDeferredValue(search);
 
   const statusFilterOptions: DropdownOption[] = useMemo(() => [
     { value: 'ALL', label: t('gallery.allStatuses') },
@@ -92,18 +93,21 @@ export default function AdminDashboard() {
     ];
   }, [artworks, locale, t]);
 
-  const filtered = artworks.filter((art) => {
-    const q = search.toLowerCase();
-    const title = getArtworkTitle(art, locale).toLowerCase();
-    const category = getArtworkCategory(art, locale).toLowerCase();
-    const rawCategory = (art.category || '').toLowerCase();
-    const matchesSearch =
-      !q || title.includes(q) || category.includes(q) || rawCategory.includes(q);
-    const matchesStatus = statusFilter === 'ALL' || art.status === statusFilter;
-    const matchesCategory =
-      categoryFilter === 'ALL' || (art.categorySlug || art.category) === categoryFilter;
-    return matchesSearch && matchesStatus && matchesCategory;
-  });
+  const filtered = useMemo(() => {
+    const q = deferredSearch.toLowerCase();
+
+    return artworks.filter((art) => {
+      const title = getArtworkTitle(art, locale).toLowerCase();
+      const category = getArtworkCategory(art, locale).toLowerCase();
+      const rawCategory = (art.category || '').toLowerCase();
+      const matchesSearch =
+        !q || title.includes(q) || category.includes(q) || rawCategory.includes(q);
+      const matchesStatus = statusFilter === 'ALL' || art.status === statusFilter;
+      const matchesCategory =
+        categoryFilter === 'ALL' || (art.categorySlug || art.category) === categoryFilter;
+      return matchesSearch && matchesStatus && matchesCategory;
+    });
+  }, [artworks, categoryFilter, deferredSearch, locale, statusFilter]);
 
   if (view === 'create') {
     return (

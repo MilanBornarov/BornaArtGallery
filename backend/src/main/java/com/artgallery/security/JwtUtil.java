@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +25,19 @@ public class JwtUtil {
     @Value("${jwt.refresh-token-expiration-ms}")
     private long refreshTokenExpirationMs;
 
+    private SecretKey accessKey;
+
+    @PostConstruct
+    void validateConfiguration() {
+        byte[] keyBytes = accessTokenSecret.getBytes(StandardCharsets.UTF_8);
+        if (keyBytes.length < 32) {
+            throw new IllegalStateException("JWT access token secret must be at least 32 bytes long.");
+        }
+        accessKey = Keys.hmacShaKeyFor(keyBytes);
+    }
+
     private SecretKey getAccessKey() {
-        return Keys.hmacShaKeyFor(accessTokenSecret.getBytes(StandardCharsets.UTF_8));
+        return accessKey;
     }
 
     public String generateAccessToken(Long userId, String email, String role) {

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { useLanguage } from '../context/LanguageContext';
 
 type FrameStyle = 'classic' | 'black' | 'gallery' | 'walnut' | 'floating';
@@ -12,6 +13,9 @@ export default function FramePreviewModal({ isOpen, onClose }: Props) {
   const { t } = useLanguage();
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [activeFrame, setActiveFrame] = useState<FrameStyle>('classic');
+  const panelRef = useRef<HTMLDivElement | null>(null);
+
+  useBodyScrollLock(isOpen, [panelRef]);
 
   const frameOptions: { value: FrameStyle; label: string }[] = [
     { value: 'classic', label: t('framePreview.classicGold') },
@@ -22,10 +26,12 @@ export default function FramePreviewModal({ isOpen, onClose }: Props) {
   ];
 
   useEffect(() => {
-    if (!isOpen) return;
-    document.body.classList.add('modal-open');
-    return () => document.body.classList.remove('modal-open');
-  }, [isOpen]);
+    return () => {
+      if (selectedImage) {
+        URL.revokeObjectURL(selectedImage);
+      }
+    };
+  }, [selectedImage]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -56,8 +62,16 @@ export default function FramePreviewModal({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
   return (
-    <div className="frame-modal-shell" onClick={onClose}>
-      <div className="frame-modal-panel" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="frame-modal-shell"
+      onClick={onClose}
+      onTouchMoveCapture={(event) => {
+        if (event.target === event.currentTarget && event.cancelable) {
+          event.preventDefault();
+        }
+      }}
+    >
+      <div ref={panelRef} className="frame-modal-panel" onClick={(e) => e.stopPropagation()}>
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="lg:w-[32%] flex flex-col gap-4">
             <div>
@@ -81,7 +95,12 @@ export default function FramePreviewModal({ isOpen, onClose }: Props) {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
-                  setSelectedImage(URL.createObjectURL(file));
+                  setSelectedImage((current) => {
+                    if (current) {
+                      URL.revokeObjectURL(current);
+                    }
+                    return URL.createObjectURL(file);
+                  });
                 }}
               />
             </label>

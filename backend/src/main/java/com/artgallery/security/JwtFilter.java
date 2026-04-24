@@ -1,5 +1,7 @@
 package com.artgallery.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,14 +43,16 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7);
-        if (!jwtUtil.isValidAccessToken(token)) {
+        Claims claims;
+        try {
+            claims = jwtUtil.parseAccessToken(authHeader.substring(7));
+        } catch (JwtException | IllegalArgumentException ex) {
             log.debug("Rejected invalid access token for path {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
 
-        String email = jwtUtil.extractEmail(token);
+        String email = claims.getSubject();
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

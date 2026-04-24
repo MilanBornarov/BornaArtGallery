@@ -12,15 +12,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
+    private static final String AJAX_HEADER = "X-Requested-With";
+    private static final String AJAX_HEADER_VALUE = "XMLHttpRequest";
 
     private final AuthService authService;
     private final JwtUtil jwtUtil;
@@ -37,12 +42,18 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refresh(HttpServletRequest request) {
+    public ResponseEntity<AuthResponse> refresh(
+            HttpServletRequest request,
+            @RequestHeader(value = AJAX_HEADER, required = false) String requestedWith) {
+        validateAjaxRequest(requestedWith);
         return buildAuthResponse(authService.refresh(extractRefreshToken(request)));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
+    public ResponseEntity<Void> logout(
+            HttpServletRequest request,
+            @RequestHeader(value = AJAX_HEADER, required = false) String requestedWith) {
+        validateAjaxRequest(requestedWith);
         authService.logout(extractRefreshToken(request));
         return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, expiredRefreshCookie().toString())
@@ -93,5 +104,11 @@ public class AuthController {
             }
         }
         return null;
+    }
+
+    private void validateAjaxRequest(String requestedWith) {
+        if (!AJAX_HEADER_VALUE.equals(requestedWith)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Request could not be completed");
+        }
     }
 }

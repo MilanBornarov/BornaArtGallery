@@ -1,17 +1,23 @@
+import { lazy, Suspense, type ReactNode } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import Navbar from './components/Navbar';
-import HomePage from './pages/HomePage';
-import GalleryPage from './pages/GalleryPage';
-import LoginPage from './pages/LoginPage';
-import FavoritesPage from './pages/FavoritesPage';
-import AdminDashboard from './pages/AdminDashboard';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
 
-function RequireAdmin({ children }: { children: React.ReactNode }) {
+const HomePage = lazy(() => import('./pages/HomePage'));
+const GalleryPage = lazy(() => import('./pages/GalleryPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+
+function RouteFallback() {
+  return <div className="min-h-[60vh] bg-transparent" />;
+}
+
+function RequireAdmin({ children }: { children: ReactNode }) {
   const { authReady, isAdmin, isLoggedIn } = useAuth();
   if (!authReady) return null;
   if (!isLoggedIn) return <Navigate to="/login" replace />;
@@ -19,7 +25,7 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function RequireAuth({ children }: { children: React.ReactNode }) {
+function RequireAuth({ children }: { children: ReactNode }) {
   const { authReady, isLoggedIn } = useAuth();
   if (!authReady) return null;
   if (!isLoggedIn) return <Navigate to="/login" replace />;
@@ -39,30 +45,32 @@ function AppRoutes() {
       <Navbar />
 
       <div className="flex-1">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/gallery" element={<GalleryPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/favorites"
-            element={
-              <RequireAuth>
-                <FavoritesPage />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <RequireAdmin>
-                <AdminDashboard />
-              </RequireAdmin>
-            }
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/favorites"
+              element={
+                <RequireAuth>
+                  <FavoritesPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <RequireAdmin>
+                  <AdminDashboard />
+                </RequireAdmin>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
       </div>
 
       <footer className="border-t border-white/10 bg-slate-950/45 backdrop-blur-xl text-slate-400 text-xs py-6">

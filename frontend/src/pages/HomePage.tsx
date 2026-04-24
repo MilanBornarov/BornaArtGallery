@@ -7,9 +7,11 @@ import ArtworkCard from '../components/ArtworkCard';
 import ArtworkModal from '../components/ArtworkModal';
 import { CarouselSkeleton, GridSkeleton } from '../components/LoadingSkeleton';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function HomePage() {
   const { t } = useLanguage();
+  const { isAdmin, isLoggedIn } = useAuth();
   const [featured, setFeatured] = useState<Artwork[]>([]);
   const [recent, setRecent] = useState<Artwork[]>([]);
   const [selected, setSelected] = useState<Artwork | null>(null);
@@ -17,14 +19,42 @@ export default function HomePage() {
   const [loadingGrid, setLoadingGrid] = useState(true);
 
   useEffect(() => {
+    let active = true;
+
     apiGetFeatured()
-      .then((r) => setFeatured(r.data))
-      .finally(() => setLoadingHero(false));
+      .then((r) => {
+        if (active) {
+          setFeatured(r.data);
+        }
+      })
+      .finally(() => {
+        if (active) {
+          setLoadingHero(false);
+        }
+      });
 
     apiGetArtworks()
-      .then((r) => setRecent(r.data.slice(0, 8)))
-      .finally(() => setLoadingGrid(false));
+      .then((r) => {
+        if (active) {
+          setRecent(r.data.slice(0, 8));
+        }
+      })
+      .finally(() => {
+        if (active) {
+          setLoadingGrid(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
+
+  const saveWorksCta = isAdmin
+    ? { to: '/admin', label: t('home.saveWorksCtaAdmin') }
+    : isLoggedIn
+      ? { to: '/favorites', label: t('home.saveWorksCtaUser') }
+      : { to: '/login', label: t('home.saveWorksCtaGuest') };
 
   return (
     <main>
@@ -94,8 +124,8 @@ export default function HomePage() {
         <p className="text-slate-300 text-sm max-w-md mx-auto mb-8">
           {t('home.saveWorksBody')}
         </p>
-        <Link to="/gallery" className="btn-glass-gold">
-          {t('common.browseGallery')}
+        <Link to={saveWorksCta.to} className="btn-glass-gold">
+          {saveWorksCta.label}
         </Link>
       </section>
 

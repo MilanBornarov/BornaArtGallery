@@ -1,33 +1,72 @@
+import { useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-
-const facebookLink = import.meta.env.VITE_PUBLIC_FACEBOOK_LINK || '<FACEBOOK_LINK>';
-const instagramLink = import.meta.env.VITE_PUBLIC_INSTAGRAM_LINK || '<INSTAGRAM_LINK>';
-const phoneLink = import.meta.env.VITE_PUBLIC_PHONE_LINK || '<PHONE_LINK>';
-const phoneDisplay = import.meta.env.VITE_PUBLIC_PHONE_DISPLAY || '<PHONE_DISPLAY>';
-
-const contactItems = [
-  {
-    key: 'facebook',
-    href: facebookLink,
-    value: facebookLink.replace(/^https?:\/\//, ''),
-  },
-  {
-    key: 'instagram',
-    href: instagramLink,
-    value: instagramLink.replace(/^https?:\/\/(www\.)?instagram\.com\//, '@').replace(/\/$/, ''),
-  },
-  {
-    key: 'phone',
-    href: phoneLink,
-    value: phoneDisplay,
-  },
-] as const;
+import {
+  normalizeEmailUrl,
+  normalizeExternalUrl,
+  normalizePhoneUrl,
+  pickConfiguredValue,
+} from '../utils/contactLinks';
 
 export default function ContactPage() {
   const { t } = useLanguage();
 
+  const contactItems = useMemo(
+    () =>
+      [
+        {
+          key: 'facebook',
+          href: normalizeExternalUrl(
+            pickConfiguredValue(import.meta.env.VITE_PUBLIC_FACEBOOK_LINK, import.meta.env.VITE_FACEBOOK_LINK),
+          ),
+          title: t('contact.items.facebook.title'),
+          description: t('contact.items.facebook.description'),
+          cta: t('contact.items.facebook.cta'),
+        },
+        {
+          key: 'instagram',
+          href: normalizeExternalUrl(
+            pickConfiguredValue(import.meta.env.VITE_PUBLIC_INSTAGRAM_LINK, import.meta.env.VITE_INSTAGRAM_LINK),
+          ),
+          title: t('contact.items.instagram.title'),
+          description: t('contact.items.instagram.description'),
+          cta: t('contact.items.instagram.cta'),
+        },
+        {
+          key: 'email',
+          href: normalizeEmailUrl(
+            pickConfiguredValue(
+              import.meta.env.VITE_PUBLIC_EMAIL_LINK,
+              import.meta.env.VITE_PUBLIC_EMAIL_ADDRESS,
+              import.meta.env.VITE_EMAIL_LINK,
+              import.meta.env.VITE_EMAIL_ADDRESS,
+            ),
+          ),
+          title: t('contact.items.email.title'),
+          description: t('contact.items.email.description'),
+          cta: t('contact.items.email.cta'),
+        },
+        {
+          key: 'phone',
+          href: normalizePhoneUrl(
+            pickConfiguredValue(import.meta.env.VITE_PUBLIC_PHONE_LINK, import.meta.env.VITE_PHONE_LINK),
+            pickConfiguredValue(import.meta.env.VITE_PUBLIC_PHONE_DISPLAY, import.meta.env.VITE_PHONE_DISPLAY),
+          ),
+          title: t('contact.items.phone.title'),
+          description: t('contact.items.phone.description'),
+          cta: t('contact.items.phone.cta'),
+        },
+      ].filter((item): item is {
+        key: string;
+        href: string;
+        title: string;
+        description: string;
+        cta: string;
+      } => Boolean(item.href)),
+    [t],
+  );
+
   return (
-    <main className="page-shell max-w-5xl mx-auto py-12">
+    <main className="page-shell max-w-6xl mx-auto py-12">
       <section className="glass-panel relative overflow-hidden p-6 md:p-8 lg:p-10">
         <img
           src="/logo.png"
@@ -39,27 +78,32 @@ export default function ContactPage() {
           {t('contact.overline')}
         </p>
         <h1 className="section-title mt-2 mb-4">{t('contact.title')}</h1>
-        <p className="max-w-2xl text-sm leading-7 text-slate-300">
+        <p className="text-wrap-safe max-w-2xl text-sm leading-7 text-slate-300">
           {t('contact.intro')}
         </p>
 
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-fr xl:gap-6">
           {contactItems.map((item) => (
             <a
               key={item.key}
               href={item.href}
-              target={item.key === 'phone' ? undefined : '_blank'}
-              rel={item.key === 'phone' ? undefined : 'noreferrer'}
+              target={item.key === 'phone' || item.key === 'email' ? undefined : '_blank'}
+              rel={item.key === 'phone' || item.key === 'email' ? undefined : 'noopener noreferrer'}
               className="contact-card group"
             >
-              <span className="text-[0.72rem] uppercase tracking-[0.3em] text-gallery-gold">
-                {t(`contact.items.${item.key}.label`)}
-              </span>
-              <span className="mt-4 block font-serif text-2xl text-white transition-transform duration-300 group-hover:translate-x-1">
-                {item.value}
-              </span>
-              <span className="mt-3 inline-flex text-sm text-slate-300">
-                {t('contact.openLink')}
+              <div className="contact-card-copy">
+                <span className="contact-card-kicker">{item.title}</span>
+                <h2 className="contact-card-title">
+                  {item.cta}
+                </h2>
+                <p className="contact-card-description">
+                  {item.description}
+                </p>
+              </div>
+
+              <span className="contact-card-link">
+                <span>{t('contact.openLink')}</span>
+                <span aria-hidden="true">&rarr;</span>
               </span>
             </a>
           ))}

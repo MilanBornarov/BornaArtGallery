@@ -62,6 +62,7 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center justify-center gap-6 lg:gap-8 xl:gap-10">
+          {navLink('/', t('nav.home'))}
           {navLink('/gallery', t('nav.gallery'))}
           {navLink('/about', t('nav.about'))}
           {navLink('/contact', t('nav.contact'))}

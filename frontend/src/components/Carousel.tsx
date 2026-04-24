@@ -189,6 +189,7 @@ export default function Carousel({ artworks }: Props) {
                     <img
                       src={art.imageUrl}
                       alt={getArtworkTitle(art, locale)}
+                      decoding="async"
                       className="w-full h-full object-cover"
                       loading={groupIndex === 0 && index === 0 ? 'eager' : 'lazy'}
                     />

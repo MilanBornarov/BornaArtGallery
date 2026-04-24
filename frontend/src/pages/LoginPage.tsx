@@ -65,11 +65,11 @@ export default function LoginPage() {
           ))}
         </div>
 
-        <h1 className="section-title mb-2 text-center">
+        <h1 className="section-title text-wrap-safe mb-2 text-center">
           {tab === 'login' ? t('auth.welcomeBack') : t('auth.createAccount')}
         </h1>
 
-        <p className="text-center text-slate-300 text-sm mb-6">
+        <p className="text-wrap-safe mx-auto max-w-full text-center text-sm leading-6 text-slate-300 mb-6">
           {tab === 'login' ? t('auth.loginBody') : t('auth.registerBody')}
         </p>
 

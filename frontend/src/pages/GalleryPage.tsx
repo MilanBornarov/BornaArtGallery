@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { apiFilterArtworks, apiGetArtworks, type ArtworkFilterParams } from '../services/api';
 import type { Artwork } from '../types';
 import ArtworkCard from '../components/ArtworkCard';
@@ -55,6 +55,7 @@ export default function GalleryPage() {
   const [draftDimensions, setDraftDimensions] = useState<DimensionInputs>(defaultDimensions);
   const [appliedDimensions, setAppliedDimensions] = useState<DimensionInputs>(defaultDimensions);
   const [dimensionError, setDimensionError] = useState('');
+  const deferredSearch = useDeferredValue(search);
 
   const filterParams = useMemo<ArtworkFilterParams>(() => {
     const parseNumber = (value: string) => (value === '' ? undefined : Number(value));
@@ -114,14 +115,14 @@ export default function GalleryPage() {
   }, [artworks, locale, t]);
 
   const filtered = useMemo(() => {
-    const q = search.toLowerCase();
+    const q = deferredSearch.toLowerCase();
 
     return artworks.filter((artwork) => {
       const localizedTitle = getArtworkTitle(artwork, locale).toLowerCase();
       const localizedCategory = getArtworkCategory(artwork, locale).toLowerCase();
       const rawCategory = (artwork.category || '').toLowerCase();
       const matchesSearch =
-        !search ||
+        !q ||
         localizedTitle.includes(q) ||
         localizedCategory.includes(q) ||
         rawCategory.includes(q);
@@ -133,7 +134,7 @@ export default function GalleryPage() {
 
       return matchesSearch && matchesCategory && matchesStatus && matchesFeatured;
     });
-  }, [artworks, search, activeCategory, statusFilter, featuredOnly, locale]);
+  }, [artworks, deferredSearch, activeCategory, statusFilter, featuredOnly, locale]);
 
   const grouped = useMemo(() => {
     if (activeCategory !== 'ALL') return { [activeCategory]: filtered };
@@ -175,15 +176,24 @@ export default function GalleryPage() {
   return (
     <main className="page-shell max-w-7xl mx-auto px-6 py-12">
       <div className="glass-panel relative overflow-hidden p-6 md:p-8 mb-10">
-        <img
-          src="/logo.png"
-          alt=""
-          aria-hidden="true"
-          className="absolute top-4 right-4 h-12 w-12 md:h-14 md:w-14 object-contain opacity-80 pointer-events-none"
-        />
-        <p className="text-[0.625rem] tracking-[0.3em] uppercase text-[#f2d786] mb-2">{t('home.collection')}</p>
-        <h1 className="section-title mb-3">{t('gallery.title')}</h1>
-        <p className="text-slate-300 text-sm max-w-2xl mb-6">{t('gallery.intro')}</p>
+        <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
+          <div className="min-w-0">
+            <p className="text-[0.625rem] tracking-[0.3em] uppercase text-[#f2d786] mb-2">{t('home.collection')}</p>
+            <h1 className="section-title mb-3 text-wrap-safe">{t('gallery.title')}</h1>
+            <p className="text-wrap-safe text-slate-300 text-sm max-w-2xl">{t('gallery.intro')}</p>
+          </div>
+
+          <div className="hidden md:flex md:justify-end">
+            <div className="rounded-[var(--radius-xl)] border border-white/10 bg-black/10 p-3 backdrop-blur-sm">
+              <img
+                src="/logo.png"
+                alt=""
+                aria-hidden="true"
+                className="h-14 w-14 lg:h-16 lg:w-16 object-contain opacity-80 pointer-events-none"
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="flex flex-col gap-4">
           <input

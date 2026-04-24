@@ -16,6 +16,7 @@ export default function FadeInImage({ className = '', onLoad, onError, src, ...p
       {...props}
       ref={imageRef}
       src={src}
+      decoding={props.decoding ?? 'async'}
       onLoad={(event) => {
         setLoaded(true);
         onLoad?.(event);
@@ -24,7 +25,7 @@ export default function FadeInImage({ className = '', onLoad, onError, src, ...p
         setLoaded(true);
         onError?.(event);
       }}
-      className={`transition-opacity duration-700 ease-out ${loaded ? 'opacity-100' : 'opacity-0'} ${className}`.trim()}
+      className={`transition-opacity duration-1000 ease-out ${loaded ? 'opacity-100' : 'opacity-0'} ${className}`.trim()}
     />
   );
 }

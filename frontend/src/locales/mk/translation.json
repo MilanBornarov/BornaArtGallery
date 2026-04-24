@@ -56,7 +56,10 @@
     "noArtworks": "Сè уште нема дела",
     "checkBackSoon": "Проверете повторно наскоро.",
     "saveWorksTitle": "Зачувајте ги делата што ги сакате.",
-    "saveWorksBody": "Креирајте профил за да ги чувате омилените и да му овозможите на админот да управува со галеријата од едно место."
+    "saveWorksBody": "Креирајте профил за да ги чувате омилените и да му овозможите на админот да управува со галеријата од едно место.",
+    "saveWorksCtaGuest": "Регистрирај се или најави се",
+    "saveWorksCtaUser": "Види ги зачуваните дела",
+    "saveWorksCtaAdmin": "Отвори панел"
   },
   "gallery": {
     "title": "Галерија Borna Art",
@@ -245,9 +248,30 @@
     "intro": "Контактирајте преку социјални мрежи или телефон за прашања за дела, нарачки или изложби.",
     "openLink": "Отвори линк",
     "items": {
-      "facebook": { "label": "Facebook" },
-      "instagram": { "label": "Instagram" },
-      "phone": { "label": "Телефон" }
+      "facebook": {
+        "label": "Facebook",
+        "title": "Facebook",
+        "cta": "Facebook",
+        "description": "Отвори ја официјалната Facebook страница и контактирај ја уметницата."
+      },
+      "instagram": {
+        "label": "Instagram",
+        "title": "Instagram",
+        "cta": "Instagram",
+        "description": "Погледни ги најновите дела, моменти од ателјето и испрати порака."
+      },
+      "email": {
+        "label": "E-mail",
+        "title": "E-mail",
+        "cta": "E-mail",
+        "description": "Испрати e-mail за прашања за дела, нарачки и достава."
+      },
+      "phone": {
+        "label": "Телефон",
+        "title": "Контактирај ја уметницата",
+        "cta": "Контактирај ја уметницата",
+        "description": "Јави се директно за достапност, рамки и купување."
+      }
     }
   }
 }

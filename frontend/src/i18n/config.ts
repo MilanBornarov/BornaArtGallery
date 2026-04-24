@@ -4,7 +4,18 @@ import { translations } from './translations';
 
 const LANGUAGE_STORAGE_KEY = 'locale';
 
-const savedLocale = typeof window !== 'undefined' ? window.localStorage.getItem(LANGUAGE_STORAGE_KEY) : null;
+function resolveSavedLocale() {
+  if (typeof window === 'undefined') {
+    return 'mk';
+  }
+
+  try {
+    const savedLocale = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    return savedLocale === 'en' || savedLocale === 'mk' ? savedLocale : 'mk';
+  } catch {
+    return 'mk';
+  }
+}
 
 void i18n
   .use(initReactI18next)
@@ -13,7 +24,7 @@ void i18n
       en: { translation: translations.en },
       mk: { translation: translations.mk },
     },
-    lng: savedLocale === 'mk' ? 'mk' : 'en',
+    lng: resolveSavedLocale(),
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,

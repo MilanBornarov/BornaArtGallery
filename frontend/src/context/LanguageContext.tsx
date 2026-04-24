@@ -24,7 +24,11 @@ export function useLanguage(): LanguageContextValue {
 
   const setLocale = useCallback((nextLocale: Locale) => {
     void i18nInstance.changeLanguage(nextLocale);
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLocale);
+    try {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLocale);
+    } catch {
+      // Ignore storage write failures and keep the in-memory locale change.
+    }
     document.documentElement.lang = nextLocale;
   }, [i18nInstance]);
 
