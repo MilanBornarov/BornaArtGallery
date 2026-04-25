@@ -1,40 +1,71 @@
-# Borna Art
+# 🎨 Borna Art
 
-A bilingual online art gallery and studio website built for showcasing original artworks, telling the artist’s story, and managing the collection through a secure admin dashboard.
+A bilingual online art gallery and studio platform built to showcase original artworks, tell the artist's story, and manage the collection through a secure admin dashboard.
 
-## Overview
+---
 
-Borna Art is a full-stack web app for an artist or gallery studio. Visitors can browse the collection, filter artworks by category, availability, dimensions, and orientation, explore the atelier and creative process, and save favorite pieces after signing in.
+## 🧩 Overview
 
-On the admin side, the app supports secure artwork management with image uploads, featured artwork controls, status updates, and bilingual content support.
+**Borna Art** is a full-stack web application designed for a single artist or gallery studio.
 
-## What The App Does
+Visitors can:
+- Browse artworks
+- Filter by various criteria
+- Explore the creative process and atelier
+- Save favorite pieces (after signing in)
 
-- Showcases featured and recent artworks on a polished gallery homepage
-- Lets visitors browse the full collection with search and advanced filters
-- Supports bilingual content in Macedonian and English
-- Includes an artist/about page, atelier page, process section, and contact page
-- Allows registered users to save favorite artworks
-- Provides an admin dashboard for uploading, editing, featuring, and deleting artworks
-- Stores artwork images in Cloudinary
-- Uses a PostgreSQL database via Supabase
-- Secures authentication with JWT access tokens and rotating refresh tokens
+Admins can:
+- Manage artworks securely
+- Upload and update images
+- Control featured content
+- Maintain bilingual content
 
-## Main Features
+---
 
-- Public gallery browsing
+## 🚀 What The App Does
+
+- Displays featured and recent artworks on a polished homepage
+- Provides advanced filtering and search functionality
+- Supports bilingual content (Macedonian 🇲🇰 / English 🇬🇧)
+- Includes:
+  - Artist/About page
+  - Atelier page
+  - Process section
+  - Contact page
+- Allows users to save favorite artworks
+- Includes a secure admin dashboard for full artwork management
+
+---
+
+## ✨ Main Features
+
+### Public Features
+- Gallery browsing
 - Featured artworks carousel
 - Artwork modal previews
-- Favorites for signed-in users
-- Login and registration
-- Admin-only artwork management
-- Artwork dimensions and orientation filtering
-- Availability tracking (`AVAILABLE` / `SOLD`)
+- Advanced filtering (category, dimensions, orientation, availability)
 - Bilingual artwork titles and descriptions
-- Automatic Macedonian-to-English translation support through an OpenAI-compatible provider
-- Secure backend validation, upload checks, and rate limiting
 
-## Tech Stack
+### User Features
+- Registration & login
+- Save and manage favorite artworks
+
+### Admin Features
+- Upload artworks with images
+- Edit artwork details
+- Replace images
+- Mark artworks as featured
+- Update availability (AVAILABLE / SOLD)
+- Delete artworks securely
+
+### Smart Features
+- Automatic Macedonian → English translation (OpenAI-compatible provider)
+- Server-side validation and upload checks
+- Rate limiting for sensitive endpoints
+
+---
+
+## 🛠 Tech Stack
 
 ### Frontend
 - React
@@ -51,21 +82,157 @@ On the admin side, the app supports secure artwork management with image uploads
 - Spring Security
 - Spring Data JPA
 - PostgreSQL
-- JWT authentication
-- Bucket4j rate limiting
+- JWT Authentication
+- Bucket4j (Rate Limiting)
 
 ### Services
-- Supabase PostgreSQL
-- Cloudinary image hosting
-- OpenAI-compatible translation endpoint
-- Netlify frontend deployment
-- Render backend deployment
+- Supabase (PostgreSQL)
+- Cloudinary (Image Hosting)
+- OpenAI-compatible Translation API
+- Netlify (Frontend Deployment)
+- Render (Backend Deployment)
 
-## Project Structure
+---
 
-```text
-frontend/   React app, pages, components, i18n, auth/favorites state
-backend/    Spring Boot API, security, services, controllers, repositories
-supabase/   SQL migrations and row-level-security policy files
-schema.sql  Main database schema
-render.yaml Render deployment config
+## 📁 Project Structure
+
+```
+frontend/   → React app (pages, components, i18n, auth/favorites state)
+backend/    → Spring Boot API (security, services, controllers, repositories)
+supabase/   → SQL migrations & RLS policies
+schema.sql  → Main database schema
+render.yaml → Render deployment configuration
+```
+
+---
+
+## 🔄 Core User Flows
+
+### 👤 Visitor
+1. Open homepage  
+2. Browse featured and recent artworks  
+3. Search and filter gallery  
+4. Explore artist and atelier  
+5. Contact the studio  
+
+### 🔐 Registered User
+1. Sign up / log in  
+2. Save artworks to favorites  
+3. Revisit saved artworks  
+
+### 🛠 Admin
+1. Log in with admin privileges  
+2. Upload new artwork (image, dimensions, category, status)  
+3. Edit artwork details  
+4. Replace images  
+5. Mark artworks as featured  
+6. Update availability  
+7. Delete artworks securely  
+
+---
+
+## 🔒 Security Notes
+
+- Short-lived JWT access tokens
+- Refresh tokens stored in **HttpOnly cookies**
+- Refresh token rotation with database tracking
+- Explicit CORS allowlist
+- Backend-enforced admin permissions
+- Server-side image validation
+- Rate limiting on:
+  - Authentication
+  - Favorites
+  - Uploads
+  - Admin actions
+- Generic error responses for production safety
+
+---
+
+## ⚙️ Running Locally
+
+### Prerequisites
+- Node.js
+- Java 17
+- Maven
+- PostgreSQL or Supabase project
+- Cloudinary account
+
+---
+
+### ▶️ Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+### ▶️ Backend
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+---
+
+## 🔧 Environment Setup
+
+Configure environment variables for:
+
+- Database connection
+- JWT secrets
+- Cloudinary credentials
+- Allowed frontend origins
+- Auth cookie settings
+- Translation API key
+- Public contact links
+
+---
+
+## 🗄 Database Setup
+
+- Run `schema.sql`  
+**OR**
+- Apply migrations from:
+
+```
+supabase/migrations/
+```
+
+---
+
+## 🚀 Deployment
+
+- **Frontend:** Netlify  
+- **Backend:** Render  
+- **Database:** Supabase PostgreSQL  
+- **Media Storage:** Cloudinary  
+
+---
+
+## 📌 Status
+
+This project is **production-oriented** and includes:
+
+- Full deployment setup
+- Secure authentication system
+- Media management
+- Bilingual content support
+- Security hardening
+
+---
+
+## 🧠 Notes
+
+- Designed for a **single artist workflow**
+- Focused on performance, security, and clean UI/UX
+- Easily extendable for future features
+
+---
+
+## 📬 Contact
+
+Use the in-app contact links to reach the artist directly.
