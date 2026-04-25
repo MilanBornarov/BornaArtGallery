@@ -88,12 +88,36 @@ export default function ArtworkModal({ artwork, onClose, hideNavbar = false }: P
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           <div className="flex shrink-0 items-center justify-center bg-gallery-dark px-4 pb-5 pt-16 sm:px-6 sm:pb-6 sm:pt-20 lg:px-8 lg:pb-8">
-            <img
-              src={artwork.imageUrl}
-              alt={title}
-              decoding="async"
-              className="artwork-modal-image"
-            />
+            <div className="flex w-full max-w-full flex-col items-center gap-4">
+              <img
+                src={artwork.imageUrl}
+                alt={title}
+                decoding="async"
+                className="artwork-modal-image"
+              />
+
+              {artwork.status === 'SOLD' ? (
+                <span className="w-full max-w-xs rounded-[var(--radius-xl)] border border-white/10 py-3 text-center text-sm tracking-wider text-slate-400 opacity-60 sm:max-w-sm">
+                  {t('common.contactToBuy')}
+                </span>
+              ) : buyLink ? (
+                <a
+                  href={buyLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full max-w-xs rounded-[var(--radius-xl)] border border-gallery-gold py-3 text-center text-sm tracking-wider text-gallery-gold transition-colors duration-300 hover:bg-gallery-gold hover:text-gallery-dark sm:max-w-sm"
+                >
+                  {t('common.contactToBuy')}
+                </a>
+              ) : (
+                <Link
+                  to="/contact"
+                  className="w-full max-w-xs rounded-[var(--radius-xl)] border border-gallery-gold py-3 text-center text-sm tracking-wider text-gallery-gold transition-colors duration-300 hover:bg-gallery-gold hover:text-gallery-dark sm:max-w-sm"
+                >
+                  {t('common.contactToBuy')}
+                </Link>
+              )}
+            </div>
           </div>
 
           <div className="flex flex-col border-t border-white/10 px-5 pb-5 pt-8 sm:px-7 sm:pb-7 sm:pt-10 lg:px-8 lg:pb-8">
@@ -138,7 +162,7 @@ export default function ArtworkModal({ artwork, onClose, hideNavbar = false }: P
               {isLoggedIn ? (
                 <button
                   onClick={() => toggle(artwork.id)}
-                  className={`flex-1 py-3 text-sm tracking-wider transition-all duration-300 border rounded-[var(--radius-xl)] ${
+                  className={`w-full py-3 text-sm tracking-wider transition-all duration-300 border rounded-[var(--radius-xl)] ${
                     favorited
                       ? 'border-gallery-gold/70 bg-gallery-gold/15 text-gallery-cream shadow-[0_0_0_1px_rgba(245,202,72,0.22),0_1rem_2rem_rgba(201,168,76,0.14)]'
                       : 'border-white/15 text-slate-50 hover:border-gallery-gold/60 hover:bg-white/10'
@@ -147,28 +171,6 @@ export default function ArtworkModal({ artwork, onClose, hideNavbar = false }: P
                   {favorited ? `\u2665 ${t('artwork.savedAction')}` : `\u2661 ${t('artwork.saveAction')}`}
                 </button>
               ) : null}
-
-              {artwork.status === 'SOLD' ? (
-                <span className="flex-1 py-3 text-sm tracking-wider text-center border rounded-[var(--radius-xl)] transition-all duration-300 border-white/10 text-slate-400 pointer-events-none opacity-60">
-                  {t('common.contactToBuy')}
-                </span>
-              ) : buyLink ? (
-                <a
-                  href={buyLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 py-3 text-sm tracking-wider text-center border rounded-[var(--radius-xl)] transition-all duration-300 border-gallery-gold text-gallery-gold hover:bg-gallery-gold hover:text-gallery-dark"
-                >
-                  {t('common.contactToBuy')}
-                </a>
-              ) : (
-                <Link
-                  to="/contact"
-                  className="flex-1 py-3 text-sm tracking-wider text-center border rounded-[var(--radius-xl)] transition-all duration-300 border-gallery-gold text-gallery-gold hover:bg-gallery-gold hover:text-gallery-dark"
-                >
-                  {t('common.contactToBuy')}
-                </Link>
-              )}
             </div>
           </div>
         </div>

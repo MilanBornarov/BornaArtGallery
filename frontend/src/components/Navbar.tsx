@@ -65,6 +65,7 @@ export default function Navbar() {
           {navLink('/', t('nav.home'))}
           {navLink('/gallery', t('nav.gallery'))}
           {navLink('/about', t('nav.about'))}
+          {navLink('/atelier', t('nav.atelier'))}
           {navLink('/contact', t('nav.contact'))}
           {isAdmin && navLink('/admin', t('nav.dashboard'))}
         </div>
@@ -127,6 +128,7 @@ export default function Navbar() {
           {navLink('/', t('nav.home'))}
           {navLink('/gallery', t('nav.gallery'))}
           {navLink('/about', t('nav.about'))}
+          {navLink('/atelier', t('nav.atelier'))}
           {navLink('/contact', t('nav.contact'))}
           {isAdmin && navLink('/admin', t('nav.dashboard'))}
           {isLoggedIn && !isAdmin && navLink('/favorites', t('nav.favorites'))}

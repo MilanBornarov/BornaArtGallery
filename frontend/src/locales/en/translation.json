@@ -36,6 +36,7 @@
     "home": "Home",
     "gallery": "Gallery",
     "about": "About",
+    "atelier": "Atelier",
     "contact": "Contact",
     "dashboard": "Dashboard",
     "favorites": "Favorites",
@@ -195,16 +196,18 @@
     "statementParagraph1": "BORNA's artworks are never printed. She works with high-quality acrylic paints, mediums, structural pastes, and finishing varnishes sourced from American, German, Polish, English, Dutch, and Italian manufacturers to create original one-of-a-kind pieces. To protect each painting from sunlight and other outside influences, and to ensure easier care and long-term durability, every work is sealed with a final protective varnish.",
     "statementParagraph2": "The paintings are created on premium 100% cotton canvas stretched on wooden frames or panels of Italian, Greek, Serbian, and local origin. After framing, each artwork is carefully packed first in bubble wrap and then in cardboard so it can be delivered safely to your home. To date, not a single BORNA painting has been damaged in transit.",
     "gallery": {
-      "colors": "Colors",
+      "colors": "Colors and media",
       "tools": "Tools",
       "canvases": "Canvases",
-      "studio": "Atelier"
+      "studio": "Atelier",
+      "frames": "Frames"
     },
     "galleryAlt": {
       "colors": "Colors placeholder",
       "tools": "Tools placeholder",
       "canvases": "Canvases placeholder",
-      "studio": "Atelier details"
+      "studio": "Atelier details",
+      "frames": "Frames details"
     },
     "processOverline": "Process Steps",
     "processTitle": "From concept to finished canvas",

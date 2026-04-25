@@ -16,6 +16,7 @@ export interface LightboxPayload {
   initialIndex?: number;
   galleryTitle?: string;
   showDetails?: boolean;
+  hideNavbar?: boolean;
 }
 
 interface Props extends LightboxPayload {
@@ -65,6 +66,7 @@ export default function ImageLightbox({
   initialIndex = 0,
   galleryTitle,
   showDetails = true,
+  hideNavbar = false,
   onClose,
 }: Props) {
   const { t } = useLanguage();
@@ -83,6 +85,18 @@ export default function ImageLightbox({
   const currentItem = items[activeIndex];
 
   useBodyScrollLock(true, [modalRef]);
+
+  useEffect(() => {
+    if (!hideNavbar) {
+      return;
+    }
+
+    document.body.classList.add('app-chrome-hidden');
+
+    return () => {
+      document.body.classList.remove('app-chrome-hidden');
+    };
+  }, [hideNavbar]);
 
   useEffect(() => {
     setActiveIndex(clampIndex(initialIndex, items.length));

@@ -11,6 +11,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
+const AtelierPage = lazy(() => import('./pages/AtelierPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 
 function RouteFallback() {
@@ -50,6 +51,7 @@ function AppRoutes() {
             <Route path="/" element={<HomePage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/atelier" element={<AtelierPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route

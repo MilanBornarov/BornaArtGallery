@@ -1,8 +1,14 @@
+import { Link } from 'react-router-dom';
 import type { Artwork } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../hooks/useFavorites';
 import { useLanguage } from '../context/LanguageContext';
 import { getArtworkCategory, getArtworkDescription, getArtworkTitle, getStatusLabel } from '../i18n/helpers';
+import { normalizeExternalUrl, pickConfiguredValue } from '../utils/contactLinks';
+
+const FACEBOOK_LINK = normalizeExternalUrl(
+  pickConfiguredValue(import.meta.env.VITE_PUBLIC_FACEBOOK_LINK, import.meta.env.VITE_FACEBOOK_LINK),
+);
 
 interface Props {
   artwork: Artwork;
@@ -18,6 +24,9 @@ export default function ArtworkCard({ artwork, onClick, showFavorite = true }: P
   const title = getArtworkTitle(artwork, locale);
   const category = getArtworkCategory(artwork, locale);
   const description = getArtworkDescription(artwork, locale);
+  const buyLink = normalizeExternalUrl(artwork.facebookLink) || FACEBOOK_LINK;
+  const contactButtonClass =
+    'mb-4 mt-4 flex w-full items-center justify-center rounded-[var(--radius-xl)] border border-gallery-gold px-4 py-3 text-center text-xs font-medium uppercase tracking-[0.2em] text-gallery-gold transition-colors duration-300 hover:bg-gallery-gold hover:text-gallery-dark';
 
   return (
     <div
@@ -74,6 +83,32 @@ export default function ArtworkCard({ artwork, onClick, showFavorite = true }: P
       </div>
 
       <div className="p-5 lg:p-6">
+        {artwork.status === 'SOLD' ? (
+          <span className={`${contactButtonClass} pointer-events-none opacity-60`}>
+            {t('common.contactToBuy')}
+          </span>
+        ) : buyLink ? (
+          <a
+            href={buyLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={contactButtonClass}
+            onClick={(event) => event.stopPropagation()}
+            onKeyDown={(event) => event.stopPropagation()}
+          >
+            {t('common.contactToBuy')}
+          </a>
+        ) : (
+          <Link
+            to="/contact"
+            className={contactButtonClass}
+            onClick={(event) => event.stopPropagation()}
+            onKeyDown={(event) => event.stopPropagation()}
+          >
+            {t('common.contactToBuy')}
+          </Link>
+        )}
+
         <div className="flex items-start justify-between gap-3 mb-2">
           <h3 className="font-serif text-xl text-slate-50 leading-snug">{title}</h3>
           {artwork.year && (
