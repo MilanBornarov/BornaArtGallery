@@ -1,161 +1,182 @@
-# 🎨 Borna Art
+# 🎨 Borna Art Gallery
 
-A bilingual online art gallery and studio platform built to showcase original artworks, tell the artist's story, and manage the collection through a secure admin dashboard.
+<p align="center">
+  <b>Production-ready full-stack art gallery platform</b><br/>
+  Premium UI • Secure Admin Dashboard • Scalable Architecture
+</p>
+
+---
+
+## 🌐 Live Application
+
+<p align="center">
+  <a href="https://bornaart.netlify.app" target="_blank"><b>Visit Live App</b></a>
+</p>
+
+---
+
+## 🎬 Product Preview
+
+### 🖥️ Desktop Experience
+
+<p align="center">
+  <img src="frontend/assets/Carousel-ezgif.com-effects.gif" width="900" />
+</p>
+
+<p align="center"><i>Smooth, premium carousel with focus-based artwork presentation</i></p>
+
+---
+
+### 📱 Mobile Experience
+
+<p align="center">
+  <img src="frontend/assets/Carousel_Phone-ezgif.com-video-to-gif-converter.gif" width="300" />
+</p>
+
+<p align="center"><i>Fully responsive, touch-optimized browsing experience</i></p>
+
+---
+
+### 🛠️ Admin Dashboard
+
+<p align="center">
+  <img src="frontend/assets/AdminDashboard.png" width="900" />
+</p>
+
+<p align="center"><i>Secure and intuitive interface for managing artworks and media</i></p>
 
 ---
 
 ## 🧩 Overview
 
-**Borna Art** is a full-stack web application designed for a single artist or gallery studio.
+**Borna Art Gallery** is a modern, bilingual web application designed to:
 
-Visitors can:
-- Browse artworks
-- Filter by various criteria
-- Explore the creative process and atelier
-- Save favorite pieces (after signing in)
+* Showcase original artwork in a **premium, gallery-style UI**
+* Provide a seamless browsing experience across **desktop and mobile**
+* Enable secure **admin-side content management**
+* Support **real-world deployment and scalability**
 
-Admins can:
-- Manage artworks securely
-- Upload and update images
-- Control featured content
-- Maintain bilingual content
+Built with a **production mindset**, focusing on performance, security, and clean architecture.
 
 ---
 
-## 🚀 What The App Does
+## 🚀 Core Features
 
-- Displays featured and recent artworks on a polished homepage
-- Provides advanced filtering and search functionality
-- Supports bilingual content (Macedonian 🇲🇰 / English 🇬🇧)
-- Includes:
-  - Artist/About page
-  - Atelier page
-  - Process section
-  - Contact page
-- Allows users to save favorite artworks
-- Includes a secure admin dashboard for full artwork management
+### 🎨 Public Experience
 
----
+* Elegant artwork gallery with **carousel-based navigation**
+* Advanced filtering:
 
-## ✨ Main Features
+  * Category
+  * Dimensions
+  * Orientation
+  * Availability (AVAILABLE / SOLD)
+* Smooth modal previews with responsive scaling
+* Fully bilingual content (**🇬🇧 English / 🇲🇰 Macedonian**)
+* Dedicated sections:
 
-### Public Features
-- Gallery browsing
-- Featured artworks carousel
-- Artwork modal previews
-- Advanced filtering (category, dimensions, orientation, availability)
-- Bilingual artwork titles and descriptions
-
-### User Features
-- Registration & login
-- Save and manage favorite artworks
-
-### Admin Features
-- Upload artworks with images
-- Edit artwork details
-- Replace images
-- Mark artworks as featured
-- Update availability (AVAILABLE / SOLD)
-- Delete artworks securely
-
-### Smart Features
-- Automatic Macedonian → English translation (OpenAI-compatible provider)
-- Server-side validation and upload checks
-- Rate limiting for sensitive endpoints
+  * Artist / About
+  * Atelier
+  * Creative Process
+  * Contact
 
 ---
 
-## 🛠 Tech Stack
+### 👤 User Features
+
+* Secure registration & authentication
+* Save and manage **favorite artworks**
+* Persistent user-specific data via backend authorization
+
+---
+
+### 🛠️ Admin Dashboard
+
+* Full CRUD management of artworks
+* Image upload & replacement via Cloudinary
+* Toggle:
+
+  * Featured artworks
+  * Availability status
+* Manage bilingual content (EN / MK)
+* Secure access control (admin-only routes)
+
+---
+
+### ⚡ Smart Features
+
+* Automatic translation (OpenAI-compatible API)
+* Server-side validation
+* Rate limiting for sensitive endpoints
+* Optimized CDN media delivery
+
+---
+
+## 🏗️ Architecture & Tech Stack
 
 ### Frontend
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- React Router
-- Axios
-- i18next
+
+* React + TypeScript
+* Vite
+* Tailwind CSS
+* React Router
+* Axios
+* i18next
+
+---
 
 ### Backend
-- Java 17
-- Spring Boot
-- Spring Security
-- Spring Data JPA
-- PostgreSQL
-- JWT Authentication
-- Bucket4j (Rate Limiting)
 
-### Services
-- Supabase (PostgreSQL)
-- Cloudinary (Image Hosting)
-- OpenAI-compatible Translation API
-- Netlify (Frontend Deployment)
-- Render (Backend Deployment)
+* Java 21
+* Spring Boot
+* Spring Security (JWT)
+* Spring Data JPA
+* PostgreSQL
+
+---
+
+### Infrastructure
+
+* Supabase (Database + RLS)
+* Cloudinary (Media CDN)
+* Netlify (Frontend)
+* Render (Backend)
+* OpenAI-compatible API
 
 ---
 
 ## 📁 Project Structure
 
 ```
-frontend/   → React app (pages, components, i18n, auth/favorites state)
-backend/    → Spring Boot API (security, services, controllers, repositories)
-supabase/   → SQL migrations & RLS policies
-schema.sql  → Main database schema
-render.yaml → Render deployment configuration
+frontend/   → React app
+backend/    → Spring Boot API
+supabase/   → migrations & RLS
+schema.sql  → database schema
+render.yaml → deployment config
 ```
 
 ---
 
-## 🔄 Core User Flows
+## 🔒 Security
 
-### 👤 Visitor
-1. Open homepage  
-2. Browse featured and recent artworks  
-3. Search and filter gallery  
-4. Explore artist and atelier  
-5. Contact the studio  
-
-### 🔐 Registered User
-1. Sign up / log in  
-2. Save artworks to favorites  
-3. Revisit saved artworks  
-
-### 🛠 Admin
-1. Log in with admin privileges  
-2. Upload new artwork (image, dimensions, category, status)  
-3. Edit artwork details  
-4. Replace images  
-5. Mark artworks as featured  
-6. Update availability  
-7. Delete artworks securely  
+* JWT authentication (stateless)
+* HttpOnly refresh tokens
+* Role-based access control
+* Rate limiting (Bucket4j)
+* Server-side validation
+* Secure media handling
 
 ---
 
-## 🔒 Security Notes
-
-- Short-lived JWT access tokens
-- Refresh tokens stored in **HttpOnly cookies**
-- Refresh token rotation with database tracking
-- Explicit CORS allowlist
-- Backend-enforced admin permissions
-- Server-side image validation
-- Rate limiting on:
-  - Authentication
-  - Favorites
-  - Uploads
-  - Admin actions
-- Generic error responses for production safety
-
----
-
-## ⚙️ Running Locally
+## ⚙️ Local Setup
 
 ### Prerequisites
-- Node.js
-- Java 17
-- Maven
-- PostgreSQL or Supabase project
-- Cloudinary account
+
+* Node.js
+* Java 21
+* Maven
+* PostgreSQL / Supabase
+* Cloudinary account
 
 ---
 
@@ -178,61 +199,51 @@ mvn spring-boot:run
 
 ---
 
-## 🔧 Environment Setup
-
-Configure environment variables for:
-
-- Database connection
-- JWT secrets
-- Cloudinary credentials
-- Allowed frontend origins
-- Auth cookie settings
-- Translation API key
-- Public contact links
-
----
-
-## 🗄 Database Setup
-
-- Run `schema.sql`  
-**OR**
-- Apply migrations from:
-
-```
-supabase/migrations/
-```
-
----
-
 ## 🚀 Deployment
 
-- **Frontend:** Netlify  
-- **Backend:** Render  
-- **Database:** Supabase PostgreSQL  
-- **Media Storage:** Cloudinary  
+| Layer    | Service    |
+| -------- | ---------- |
+| Frontend | Netlify    |
+| Backend  | Render     |
+| Database | Supabase   |
+| Media    | Cloudinary |
 
 ---
 
-## 📌 Status
+## 📈 Production Ready
 
-This project is **production-oriented** and includes:
-
-- Full deployment setup
-- Secure authentication system
-- Media management
-- Bilingual content support
-- Security hardening
+* Full deployment pipeline
+* Secure auth system
+* CDN media optimization
+* Scalable architecture
+* Clean modular structure
+* Mobile-first design
 
 ---
 
-## 🧠 Notes
+## 🧠 Design Philosophy
 
-- Designed for a **single artist workflow**
-- Focused on performance, security, and clean UI/UX
-- Easily extendable for future features
+* Single-artist focused
+* Performance-first
+* Clean UX/UI
+* Easily extendable
+
+---
+
+## ⭐ Why This Project Stands Out
+
+* Real-world deployment (not just local)
+* Full authentication & security layer
+* Professional UI/UX polish
+* Scalable backend architecture
+* Production-level media handling
 
 ---
 
 ## 📬 Contact
 
-Use the in-app contact links to reach the artist directly.
+Use in-app contact options to reach the artist.
+
+---
+
+<p align="center"><b>Built with precision, performance, and attention to detail.</b></p>
