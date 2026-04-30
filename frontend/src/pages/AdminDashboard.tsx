@@ -301,10 +301,14 @@ export default function AdminDashboard() {
             <div className="flex gap-3">
               <button
                 onClick={async () => {
-                  await apiDeleteArtwork(deleteId);
-                  setDeleteId(null);
-                  showToast(t('admin.artworkDeleted'));
-                  load();
+                  try {
+                    await apiDeleteArtwork(deleteId);
+                    setDeleteId(null);
+                    showToast(t('admin.artworkDeleted'));
+                    load();
+                  } catch (err: any) {
+                    showToast(err?.response?.data?.message || t('admin.somethingWentWrong'));
+                  }
                 }}
                 className="btn-glass-danger flex-1"
               >

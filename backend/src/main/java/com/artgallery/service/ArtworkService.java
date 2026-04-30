@@ -9,6 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class ArtworkService {
+
+    private static final Logger log = LoggerFactory.getLogger(ArtworkService.class);
 
     private static final Set<String> ALLOWED_CATEGORIES = Set.of(
             "Landscapes",
@@ -205,7 +209,16 @@ public class ArtworkService {
         favoriteRepository.deleteByArtworkId(id);
 
         if (artwork.getCloudinaryPublicId() != null && !artwork.getCloudinaryPublicId().isBlank()) {
-            cloudinaryService.deleteImage(artwork.getCloudinaryPublicId());
+            try {
+                cloudinaryService.deleteImage(artwork.getCloudinaryPublicId());
+            } catch (IllegalArgumentException ex) {
+                log.error("Cloudinary deletion failed for artwork {} due to invalid configuration", id, ex);
+                throw new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Artwork could not be deleted because Cloudinary is misconfigured.",
+                        ex
+                );
+            }
         }
 
         artworkRepository.delete(artwork);

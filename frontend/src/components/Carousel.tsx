@@ -190,7 +190,13 @@ export default function Carousel({ artworks }: Props) {
                       src={art.imageUrl}
                       alt={getArtworkTitle(art, locale)}
                       decoding="async"
-                      className="w-full h-full object-cover"
+                      draggable={false}
+                      onDragStart={(event) => event.preventDefault()}
+                      className="w-full h-full select-none object-cover"
+                      style={{
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                      }}
                       loading={groupIndex === 0 && index === 0 ? 'eager' : 'lazy'}
                     />
 

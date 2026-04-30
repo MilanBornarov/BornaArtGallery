@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import Navbar from './components/Navbar';
+import BackToTopButton from './components/BackToTopButton';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const GalleryPage = lazy(() => import('./pages/GalleryPage'));
@@ -86,6 +87,8 @@ function AppRoutes() {
           <span>{t('footer.copyright')}</span>
         </div>
       </footer>
+
+      <BackToTopButton />
     </div>
   );
 }
