@@ -66,3 +66,6 @@ export function normalizePhoneUrl(value?: string | null, fallback?: string | nul
 
   return `tel:${digits}`;
 }
+
+export const ARTIST_FACEBOOK_URL =
+  normalizeExternalUrl(import.meta.env.VITE_ARTIST_FACEBOOK_URL) ?? import.meta.env.VITE_ARTIST_FACEBOOK_URL;

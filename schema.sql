@@ -30,7 +30,6 @@ create table if not exists public.artworks (
   width numeric(10, 2),
   height numeric(10, 2),
   status varchar(20) not null default 'AVAILABLE',
-  facebook_link varchar(1000),
   created_at timestamp default now(),
   constraint artworks_status_check check (status in ('AVAILABLE', 'SOLD'))
 );

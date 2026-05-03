@@ -11,12 +11,12 @@ export interface Artwork {
   categoryMk?: string | null;
   categorySlug?: string | null;
   imageUrl: string;
+  cloudinaryPublicId?: string | null;
   featured: boolean;
   year: number | null;
   width: number | null;
   height: number | null;
   status: 'AVAILABLE' | 'SOLD';
-  facebookLink?: string;
   createdAt?: string;
 }
 

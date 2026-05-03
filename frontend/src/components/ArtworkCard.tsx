@@ -1,14 +1,10 @@
-import { Link } from 'react-router-dom';
 import type { Artwork } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../hooks/useFavorites';
 import { useLanguage } from '../context/LanguageContext';
 import { getArtworkCategory, getArtworkDescription, getArtworkTitle, getStatusLabel } from '../i18n/helpers';
-import { normalizeExternalUrl, pickConfiguredValue } from '../utils/contactLinks';
-
-const FACEBOOK_LINK = normalizeExternalUrl(
-  pickConfiguredValue(import.meta.env.VITE_PUBLIC_FACEBOOK_LINK, import.meta.env.VITE_FACEBOOK_LINK),
-);
+import { ARTIST_FACEBOOK_URL } from '../utils/contactLinks';
+import { getCloudinaryImageProps } from '../utils/cloudinary';
 
 interface Props {
   artwork: Artwork;
@@ -24,7 +20,12 @@ export default function ArtworkCard({ artwork, onClick, showFavorite = true }: P
   const title = getArtworkTitle(artwork, locale);
   const category = getArtworkCategory(artwork, locale);
   const description = getArtworkDescription(artwork, locale);
-  const buyLink = normalizeExternalUrl(artwork.facebookLink) || FACEBOOK_LINK;
+  const image = getCloudinaryImageProps({
+    publicId: artwork.cloudinaryPublicId,
+    fallbackUrl: artwork.imageUrl,
+          widths: [400, 600, 800],
+          width: 800,
+        });
   const contactButtonClass =
     'mb-4 mt-4 flex w-full items-center justify-center rounded-[var(--radius-xl)] border border-gallery-gold px-4 py-3 text-center text-xs font-medium uppercase tracking-[0.2em] text-gallery-gold transition-colors duration-300 hover:bg-gallery-gold hover:text-gallery-dark';
 
@@ -43,10 +44,13 @@ export default function ArtworkCard({ artwork, onClick, showFavorite = true }: P
     >
       <div className="card-img-wrap relative aspect-[4/3]">
         <img
-          src={artwork.imageUrl}
+          src={image.src}
+          srcSet={image.srcSet}
+          sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           alt={title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+          className="w-full h-full bg-gallery-dark object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           loading="lazy"
+          decoding="async"
         />
 
         {artwork.featured && (
@@ -87,9 +91,9 @@ export default function ArtworkCard({ artwork, onClick, showFavorite = true }: P
           <span className={`${contactButtonClass} pointer-events-none opacity-60`}>
             {t('common.contactToBuy')}
           </span>
-        ) : buyLink ? (
+        ) : (
           <a
-            href={buyLink}
+            href={ARTIST_FACEBOOK_URL}
             target="_blank"
             rel="noopener noreferrer"
             className={contactButtonClass}
@@ -98,15 +102,6 @@ export default function ArtworkCard({ artwork, onClick, showFavorite = true }: P
           >
             {t('common.contactToBuy')}
           </a>
-        ) : (
-          <Link
-            to="/contact"
-            className={contactButtonClass}
-            onClick={(event) => event.stopPropagation()}
-            onKeyDown={(event) => event.stopPropagation()}
-          >
-            {t('common.contactToBuy')}
-          </Link>
         )}
 
         <div className="flex items-start justify-between gap-3 mb-2">

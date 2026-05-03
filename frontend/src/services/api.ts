@@ -97,8 +97,8 @@ export const apiUploadArtwork = (file: File, data: ArtworkFormData) => {
   form.append('file', file);
   form.append('data', JSON.stringify({
     ...data,
-    title: data.titleMk,
-    description: data.descriptionMk,
+    title: data.titleMk || data.titleEn || '',
+    description: data.descriptionMk || data.descriptionEn || '',
     year: data.year ? parseInt(data.year, 10) : null,
     width: data.width ? parseFloat(data.width) : null,
     height: data.height ? parseFloat(data.height) : null,
@@ -108,8 +108,8 @@ export const apiUploadArtwork = (file: File, data: ArtworkFormData) => {
 
 export const apiUpdateArtwork = (id: number, data: ArtworkFormData) => API.put<Artwork>(`/artworks/${id}`, {
   ...data,
-  title: data.titleMk,
-  description: data.descriptionMk,
+  title: data.titleMk || data.titleEn || '',
+  description: data.descriptionMk || data.descriptionEn || '',
   year: data.year ? parseInt(data.year, 10) : null,
   width: data.width ? parseFloat(data.width) : null,
   height: data.height ? parseFloat(data.height) : null,

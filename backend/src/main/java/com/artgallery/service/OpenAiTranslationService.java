@@ -37,6 +37,33 @@ public class OpenAiTranslationService implements TranslationService {
 
     @Override
     public String translateMacedonianToEnglish(String text, String fieldLabel) {
+        return translate(
+                text,
+                fieldLabel,
+                "Macedonian",
+                "English",
+                "You translate Macedonian gallery content into natural, polished English."
+        );
+    }
+
+    @Override
+    public String translateEnglishToMacedonian(String text, String fieldLabel) {
+        return translate(
+                text,
+                fieldLabel,
+                "English",
+                "Macedonian",
+                "You translate English gallery content into natural, polished Macedonian."
+        );
+    }
+
+    private String translate(
+            String text,
+            String fieldLabel,
+            String sourceLanguage,
+            String targetLanguage,
+            String roleInstruction
+    ) {
         if (text == null || text.isBlank()) {
             return null;
         }
@@ -44,21 +71,21 @@ public class OpenAiTranslationService implements TranslationService {
         if (apiKey == null || apiKey.isBlank()) {
             throw new ResponseStatusException(
                     HttpStatus.SERVICE_UNAVAILABLE,
-                    "Automatic English translation is not configured. Set OPENAI_API_KEY for the backend."
+                    "Automatic translation is not configured. Set OPENAI_API_KEY for the backend."
             );
         }
 
         String systemPrompt = """
-                You translate Macedonian gallery content into natural, polished English.
+                %s
                 Preserve tone and meaning.
                 Return only the translation, with no explanations, labels, or quotation marks.
-                """;
+                """.formatted(roleInstruction);
 
         String userPrompt = """
-                Translate this Macedonian gallery %s into English:
+                Translate this %s gallery %s into %s:
 
                 %s
-                """.formatted(fieldLabel, text.trim());
+                """.formatted(sourceLanguage, fieldLabel, targetLanguage, text.trim());
 
         try {
             String requestBody = objectMapper.writeValueAsString(
@@ -87,8 +114,8 @@ public class OpenAiTranslationService implements TranslationService {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_GATEWAY,
                         providerMessage == null || providerMessage.isBlank()
-                                ? "Automatic English translation failed with LLM provider status " + response.statusCode()
-                                : "Automatic English translation failed with LLM provider status "
+                                ? "Automatic translation failed with LLM provider status " + response.statusCode()
+                                : "Automatic translation failed with LLM provider status "
                                 + response.statusCode() + ": " + providerMessage
                 );
             }
@@ -99,7 +126,7 @@ public class OpenAiTranslationService implements TranslationService {
             if (translated == null || translated.isBlank()) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_GATEWAY,
-                        "Automatic English translation returned an empty result"
+                        "Automatic translation returned an empty result"
                 );
             }
 
@@ -108,12 +135,12 @@ public class OpenAiTranslationService implements TranslationService {
             Thread.currentThread().interrupt();
             throw new ResponseStatusException(
                     HttpStatus.BAD_GATEWAY,
-                    "Automatic English translation failed"
+                    "Automatic translation failed"
             );
         } catch (IOException ex) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_GATEWAY,
-                    "Automatic English translation failed"
+                    "Automatic translation failed"
             );
         }
     }

@@ -2,7 +2,6 @@ package com.artgallery.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class ArtworkDto {
-    @NotBlank(message = "Title is required")
     @Size(max = 150, message = "Title is too long")
     private String title;
     @Size(max = 150, message = "Title is too long")

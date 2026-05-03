@@ -10,6 +10,7 @@ dist/
 build/
 target/
 coverage/
+frontend/vite-dev.*.log
 
 # Java / Maven artifacts
 .mvn/

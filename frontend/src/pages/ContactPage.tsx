@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import {
+  ARTIST_FACEBOOK_URL,
   normalizeEmailUrl,
   normalizeExternalUrl,
   normalizePhoneUrl,
@@ -15,9 +16,7 @@ export default function ContactPage() {
       [
         {
           key: 'facebook',
-          href: normalizeExternalUrl(
-            pickConfiguredValue(import.meta.env.VITE_PUBLIC_FACEBOOK_LINK, import.meta.env.VITE_FACEBOOK_LINK),
-          ),
+          href: ARTIST_FACEBOOK_URL,
           title: t('contact.items.facebook.title'),
           description: t('contact.items.facebook.description'),
           cta: t('contact.items.facebook.cta'),

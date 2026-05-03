@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import type { Artwork } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../hooks/useFavorites';
@@ -12,11 +11,8 @@ import {
   getArtworkTitle,
   getStatusLabel,
 } from '../i18n/helpers';
-import { normalizeExternalUrl, pickConfiguredValue } from '../utils/contactLinks';
-
-const FACEBOOK_LINK = normalizeExternalUrl(
-  pickConfiguredValue(import.meta.env.VITE_PUBLIC_FACEBOOK_LINK, import.meta.env.VITE_FACEBOOK_LINK),
-);
+import { ARTIST_FACEBOOK_URL } from '../utils/contactLinks';
+import { getCloudinaryImageProps } from '../utils/cloudinary';
 
 interface Props {
   artwork: Artwork;
@@ -55,10 +51,15 @@ export default function ArtworkModal({ artwork, onClose, hideNavbar = false }: P
     return () => window.removeEventListener('keydown', handleKey);
   }, [requestClose]);
 
-  const buyLink = normalizeExternalUrl(artwork.facebookLink) || FACEBOOK_LINK;
   const title = getArtworkTitle(artwork, locale);
   const category = getArtworkCategory(artwork, locale);
   const description = getArtworkDescription(artwork, locale);
+  const image = getCloudinaryImageProps({
+    publicId: artwork.cloudinaryPublicId,
+    fallbackUrl: artwork.imageUrl,
+    widths: [800, 1200, 1600, 2000],
+    width: 1600,
+  });
 
   return (
     <div
@@ -90,9 +91,12 @@ export default function ArtworkModal({ artwork, onClose, hideNavbar = false }: P
           <div className="flex shrink-0 items-center justify-center bg-gallery-dark px-4 pb-5 pt-16 sm:px-6 sm:pb-6 sm:pt-20 lg:px-8 lg:pb-8">
             <div className="flex w-full max-w-full flex-col items-center gap-4">
               <img
-                src={artwork.imageUrl}
+                src={image.src}
+                srcSet={image.srcSet}
+                sizes="(min-width: 1024px) 80vw, 100vw"
                 alt={title}
                 decoding="async"
+                loading="eager"
                 className="artwork-modal-image"
               />
 
@@ -100,22 +104,15 @@ export default function ArtworkModal({ artwork, onClose, hideNavbar = false }: P
                 <span className="w-full max-w-xs rounded-[var(--radius-xl)] border border-white/10 py-3 text-center text-sm tracking-wider text-slate-400 opacity-60 sm:max-w-sm">
                   {t('common.contactToBuy')}
                 </span>
-              ) : buyLink ? (
+              ) : (
                 <a
-                  href={buyLink}
+                  href={ARTIST_FACEBOOK_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full max-w-xs rounded-[var(--radius-xl)] border border-gallery-gold py-3 text-center text-sm tracking-wider text-gallery-gold transition-colors duration-300 hover:bg-gallery-gold hover:text-gallery-dark sm:max-w-sm"
                 >
                   {t('common.contactToBuy')}
                 </a>
-              ) : (
-                <Link
-                  to="/contact"
-                  className="w-full max-w-xs rounded-[var(--radius-xl)] border border-gallery-gold py-3 text-center text-sm tracking-wider text-gallery-gold transition-colors duration-300 hover:bg-gallery-gold hover:text-gallery-dark sm:max-w-sm"
-                >
-                  {t('common.contactToBuy')}
-                </Link>
               )}
             </div>
           </div>

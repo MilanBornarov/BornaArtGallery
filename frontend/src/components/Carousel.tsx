@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Artwork } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { getArtworkTitle } from '../i18n/helpers';
+import { getCloudinaryImageProps } from '../utils/cloudinary';
 
 interface Props {
   artworks: Artwork[];
@@ -184,44 +185,55 @@ export default function Carousel({ artworks }: Props) {
           <div key={groupIndex} className="carousel-slide-group">
             <div className="relative h-full w-full">
               <div className={`grid h-full w-full ${isDesktop ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                {group.map((art, index) => (
-                  <div key={art.id} className="carousel-pane">
-                    <img
-                      src={art.imageUrl}
-                      alt={getArtworkTitle(art, locale)}
-                      decoding="async"
-                      draggable={false}
-                      onDragStart={(event) => event.preventDefault()}
-                      className="w-full h-full select-none object-cover"
-                      style={{
-                        userSelect: 'none',
-                        WebkitUserSelect: 'none',
-                      }}
-                      loading={groupIndex === 0 && index === 0 ? 'eager' : 'lazy'}
-                    />
+                {group.map((art, index) => {
+                  const image = getCloudinaryImageProps({
+                    publicId: art.cloudinaryPublicId,
+                    fallbackUrl: art.imageUrl,
+                    widths: [768, 1200, 1600, 2200],
+                    width: 2200,
+                  });
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/10" />
-                    <div className="carousel-edge-fade-left" />
-                    <div className="carousel-edge-fade-right" />
+                  return (
+                    <div key={art.id} className="carousel-pane">
+                      <img
+                        src={image.src}
+                        srcSet={image.srcSet}
+                        sizes={isDesktop ? '50vw' : '100vw'}
+                        alt={getArtworkTitle(art, locale)}
+                        decoding="async"
+                        draggable={false}
+                        onDragStart={(event) => event.preventDefault()}
+                        className="w-full h-full select-none bg-gallery-dark object-cover"
+                        style={{
+                          userSelect: 'none',
+                          WebkitUserSelect: 'none',
+                        }}
+                        loading={groupIndex === 0 && index === 0 ? 'eager' : 'lazy'}
+                      />
 
-                    <div
-                      className={`absolute bottom-[6%] z-10 max-w-[72%] ${
-                        isDesktop && index === 1 ? 'right-[5%] text-right' : 'left-[5%] text-left'
-                      }`}
-                    >
-                      <p className="text-gallery-gold text-[0.625rem] md:text-xs tracking-[0.28em] uppercase mb-2">
-                        {t('carousel.featuredWork')}
-                      </p>
-                      <h2 className="font-serif text-2xl md:text-4xl lg:text-5xl text-white leading-tight text-pre-wrap">
-                        {getArtworkTitle(art, locale)}
-                      </h2>
-                      <p className="text-white/75 text-sm md:text-base mt-1 text-pre-wrap">
-                        {t('artwork.artistLine')}
-                        {art.year ? `, ${art.year}` : ''}
-                      </p>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/10" />
+                      <div className="carousel-edge-fade-left" />
+                      <div className="carousel-edge-fade-right" />
+
+                      <div
+                        className={`absolute bottom-[6%] z-10 max-w-[72%] ${
+                          isDesktop && index === 1 ? 'right-[5%] text-right' : 'left-[5%] text-left'
+                        }`}
+                      >
+                        <p className="text-gallery-gold text-[0.625rem] md:text-xs tracking-[0.28em] uppercase mb-2">
+                          {t('carousel.featuredWork')}
+                        </p>
+                        <h2 className="font-serif text-2xl md:text-4xl lg:text-5xl text-white leading-tight text-pre-wrap">
+                          {getArtworkTitle(art, locale)}
+                        </h2>
+                        <p className="text-white/75 text-sm md:text-base mt-1 text-pre-wrap">
+                          {t('artwork.artistLine')}
+                          {art.year ? `, ${art.year}` : ''}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
 
                 {isDesktop && group.length === 1 && (
                   <div className="carousel-pane bg-slate-950/70" />

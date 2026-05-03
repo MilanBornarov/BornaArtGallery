@@ -2,6 +2,10 @@
   command = "npm run build"
   publish = "dist"
 
+[build.environment]
+  VITE_ARTIST_FACEBOOK_URL = "https://www.facebook.com/borna.original.art"
+  VITE_CLOUDINARY_CLOUD_NAME = "digw09pwb"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

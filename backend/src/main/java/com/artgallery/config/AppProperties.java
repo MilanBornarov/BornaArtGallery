@@ -18,17 +18,9 @@ import java.util.List;
 public class AppProperties {
 
     private List<String> allowedOrigins = new ArrayList<>();
-    private Contact contact = new Contact();
     private Auth auth = new Auth();
     private Upload upload = new Upload();
     private RateLimit rateLimit = new RateLimit();
-
-    @Getter
-    @Setter
-    public static class Contact {
-        @NotBlank
-        private String facebookLink;
-    }
 
     @Getter
     @Setter

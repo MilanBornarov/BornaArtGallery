@@ -3,6 +3,7 @@ import type { Artwork, ArtworkFormData } from '../types';
 import CustomDropdown, { type DropdownOption } from './CustomDropdown';
 import { useLanguage } from '../context/LanguageContext';
 import { getCategoryLabel } from '../i18n/helpers';
+import { getCloudinaryImageProps } from '../utils/cloudinary';
 
 interface Props {
   initial?: Artwork;
@@ -14,8 +15,10 @@ interface Props {
 const empty: ArtworkFormData = {
   title: '',
   titleMk: '',
+  titleEn: '',
   description: '',
   descriptionMk: '',
+  descriptionEn: '',
   category: '',
   year: '',
   width: '',
@@ -24,8 +27,30 @@ const empty: ArtworkFormData = {
   status: 'AVAILABLE',
 };
 
+function getErrorMessage(error: unknown, fallback: string) {
+  if (error && typeof error === 'object' && 'response' in error) {
+    const response = error.response;
+    if (response && typeof response === 'object' && 'data' in response) {
+      const data = response.data;
+      if (data && typeof data === 'object' && 'message' in data && typeof data.message === 'string') {
+        return data.message;
+      }
+    }
+  }
+
+  return fallback;
+}
+
 export default function ArtworkForm({ initial, onSubmit, onCancel, isEdit = false }: Props) {
   const { t } = useLanguage();
+  const initialPreview = getCloudinaryImageProps({
+    publicId: initial?.cloudinaryPublicId,
+    fallbackUrl: initial?.imageUrl,
+    widths: [300, 400],
+    width: 400,
+    height: 300,
+    crop: 'fill',
+  });
   const [form, setForm] = useState<ArtworkFormData>(
     initial
       ? {
@@ -45,7 +70,8 @@ export default function ArtworkForm({ initial, onSubmit, onCancel, isEdit = fals
       : empty,
   );
   const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>(initial?.imageUrl || '');
+  const [preview, setPreview] = useState<string>(initialPreview.src);
+  const [previewSrcSet, setPreviewSrcSet] = useState<string | undefined>(initialPreview.srcSet);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
@@ -73,12 +99,13 @@ export default function ArtworkForm({ initial, onSubmit, onCancel, isEdit = fals
     if (!selected) return;
     setFile(selected);
     setPreview(URL.createObjectURL(selected));
+    setPreviewSrcSet(undefined);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!form.titleMk.trim()) {
+    if (!form.titleMk.trim() && !(form.titleEn ?? '').trim()) {
       setError(t('admin.titleRequired'));
       return;
     }
@@ -97,8 +124,8 @@ export default function ArtworkForm({ initial, onSubmit, onCancel, isEdit = fals
     setSubmitting(true);
     try {
       await onSubmit(form, file || undefined);
-    } catch (err: any) {
-      setError(err?.response?.data?.message || t('admin.somethingWentWrong'));
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, t('admin.somethingWentWrong')));
     } finally {
       setSubmitting(false);
     }
@@ -119,7 +146,15 @@ export default function ArtworkForm({ initial, onSubmit, onCancel, isEdit = fals
           onClick={() => fileRef.current?.click()}
         >
           {preview ? (
-            <img src={preview} alt={t('common.image')} className="w-full h-48 object-cover" />
+            <img
+              src={preview}
+              srcSet={previewSrcSet}
+              sizes="(min-width: 768px) 40rem, 100vw"
+              alt={t('common.image')}
+              className="w-full h-48 object-cover"
+              loading="lazy"
+              decoding="async"
+            />
           ) : (
             <div className="h-48 flex flex-col items-center justify-center text-gallery-stone gap-2">
               <span className="text-3xl">+</span>
@@ -137,6 +172,16 @@ export default function ArtworkForm({ initial, onSubmit, onCancel, isEdit = fals
           value={form.titleMk}
           onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value, titleMk: e.target.value }))}
           placeholder={t('admin.artworkTitlePlaceholderMk')}
+        />
+      </div>
+
+      <div>
+        <label className="block text-xs tracking-wider uppercase text-gallery-stone mb-1.5">{t('admin.titleEn')}</label>
+        <input
+          className="input-field"
+          value={form.titleEn || ''}
+          onChange={(e) => setForm((prev) => ({ ...prev, titleEn: e.target.value }))}
+          placeholder={t('admin.artworkTitlePlaceholderEn')}
         />
       </div>
 
@@ -225,6 +270,17 @@ export default function ArtworkForm({ initial, onSubmit, onCancel, isEdit = fals
           value={form.descriptionMk}
           onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value, descriptionMk: e.target.value }))}
           placeholder={t('admin.descriptionPlaceholderMk')}
+        />
+      </div>
+
+      <div>
+        <label className="block text-xs tracking-wider uppercase text-gallery-stone mb-1.5">{t('admin.descriptionEn')}</label>
+        <textarea
+          className="input-field resize-none text-pre-wrap"
+          rows={4}
+          value={form.descriptionEn || ''}
+          onChange={(e) => setForm((prev) => ({ ...prev, descriptionEn: e.target.value }))}
+          placeholder={t('admin.descriptionPlaceholderEn')}
         />
       </div>
 

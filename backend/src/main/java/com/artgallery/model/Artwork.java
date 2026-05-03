@@ -54,9 +54,6 @@ public class Artwork {
     @Column(nullable = false)
     private String status;
 
-    @Column(name = "facebook_link", length = 1000)
-    private String facebookLink;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

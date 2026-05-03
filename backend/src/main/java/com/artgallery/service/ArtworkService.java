@@ -1,6 +1,5 @@
 package com.artgallery.service;
 
-import com.artgallery.config.AppProperties;
 import com.artgallery.dto.ArtworkDto;
 import com.artgallery.model.Artwork;
 import com.artgallery.repository.ArtworkRepository;
@@ -46,7 +45,6 @@ public class ArtworkService {
     private final ObjectMapper objectMapper;
     private final CloudinaryService cloudinaryService;
     private final TranslationService translationService;
-    private final AppProperties appProperties;
 
     public List<Artwork> getAll() {
         return artworkRepository.findAll().stream()
@@ -134,7 +132,7 @@ public class ArtworkService {
 
     public Artwork upload(MultipartFile file, String dataJson) throws IOException {
         ArtworkDto dto = parseArtworkDto(dataJson);
-        NormalizedArtwork normalized = normalizeAndValidate(dto);
+        NormalizedArtwork normalized = normalizeAndValidate(dto, true);
         CloudinaryService.UploadResult upload = cloudinaryService.uploadArtworkImage(file);
 
         Artwork artwork = Artwork.builder()
@@ -148,7 +146,6 @@ public class ArtworkService {
                 .height(dto.getHeight())
                 .featured(dto.isFeatured())
                 .status(normalized.status())
-                .facebookLink(appProperties.getContact().getFacebookLink())
                 .imageUrl(upload.imageUrl())
                 .cloudinaryPublicId(upload.publicId())
                 .build();
@@ -157,22 +154,88 @@ public class ArtworkService {
     }
 
     public Artwork update(Long id, ArtworkDto dto) {
-        NormalizedArtwork normalized = normalizeAndValidate(dto);
-
         Artwork artwork = getById(id);
-        artwork.setTitleMk(normalized.titleMk());
-        artwork.setTitleEn(normalized.titleEn());
-        artwork.setDescriptionMk(normalized.descriptionMk());
-        artwork.setDescriptionEn(normalized.descriptionEn());
-        artwork.setCategory(normalized.category());
+
+        NormalizedArtwork normalized = normalizeAndValidate(dto, false);
+        NormalizedArtwork translated = translateChangedFields(artwork, normalized);
+
+        artwork.setTitleMk(translated.titleMk());
+        artwork.setTitleEn(translated.titleEn());
+        artwork.setDescriptionMk(translated.descriptionMk());
+        artwork.setDescriptionEn(translated.descriptionEn());
+        artwork.setCategory(translated.category());
         artwork.setYear(dto.getYear());
         artwork.setWidth(dto.getWidth());
         artwork.setHeight(dto.getHeight());
         artwork.setFeatured(dto.isFeatured());
-        artwork.setStatus(normalized.status());
-        artwork.setFacebookLink(appProperties.getContact().getFacebookLink());
+        artwork.setStatus(translated.status());
 
         return artworkRepository.save(artwork);
+    }
+
+    private NormalizedArtwork translateChangedFields(Artwork artwork, NormalizedArtwork normalized) {
+        String titleMk = normalized.titleMk();
+        String titleEn = normalized.titleEn();
+        String descriptionMk = normalized.descriptionMk();
+        String descriptionEn = normalized.descriptionEn();
+
+        boolean titleMkChanged = changed(artwork.getTitleMk(), titleMk);
+        boolean titleEnChanged = changed(artwork.getTitleEn(), titleEn);
+        boolean descriptionMkChanged = changed(artwork.getDescriptionMk(), descriptionMk);
+        boolean descriptionEnChanged = changed(artwork.getDescriptionEn(), descriptionEn);
+
+        if (hasText(titleMk) && (!hasText(titleEn) || (titleMkChanged && !titleEnChanged))) {
+            String sourceTitleMk = titleMk;
+            titleEn = translateSafely(
+                    () -> translationService.translateMacedonianToEnglish(sourceTitleMk, "title"),
+                    artwork.getTitleEn(),
+                    "title",
+                    artwork.getId(),
+                    "Macedonian",
+                    "English"
+            );
+        } else if (hasText(titleEn) && (!hasText(titleMk) || (titleEnChanged && !titleMkChanged))) {
+            String sourceTitleEn = titleEn;
+            titleMk = translateSafely(
+                    () -> translationService.translateEnglishToMacedonian(sourceTitleEn, "title"),
+                    artwork.getTitleMk(),
+                    "title",
+                    artwork.getId(),
+                    "English",
+                    "Macedonian"
+            );
+        }
+
+        if (hasText(descriptionMk) && (!hasText(descriptionEn) || (descriptionMkChanged && !descriptionEnChanged))) {
+            String sourceDescriptionMk = descriptionMk;
+            descriptionEn = translateSafely(
+                    () -> translationService.translateMacedonianToEnglish(sourceDescriptionMk, "description"),
+                    artwork.getDescriptionEn(),
+                    "description",
+                    artwork.getId(),
+                    "Macedonian",
+                    "English"
+            );
+        } else if (hasText(descriptionEn) && (!hasText(descriptionMk) || (descriptionEnChanged && !descriptionMkChanged))) {
+            String sourceDescriptionEn = descriptionEn;
+            descriptionMk = translateSafely(
+                    () -> translationService.translateEnglishToMacedonian(sourceDescriptionEn, "description"),
+                    artwork.getDescriptionMk(),
+                    "description",
+                    artwork.getId(),
+                    "English",
+                    "Macedonian"
+            );
+        }
+
+        return new NormalizedArtwork(
+                titleMk,
+                titleEn,
+                descriptionMk,
+                descriptionEn,
+                normalized.category(),
+                normalized.status()
+        );
     }
 
     public Artwork replaceImage(Long id, MultipartFile file) throws IOException {
@@ -232,13 +295,55 @@ public class ArtworkService {
         }
     }
 
-    private NormalizedArtwork normalizeAndValidate(ArtworkDto dto) {
+    private NormalizedArtwork normalizeAndValidate(ArtworkDto dto, boolean translateMissingEnglish) {
         validateArtworkDimensions(dto.getWidth(), dto.getHeight());
 
-        String mkTitle = normalizeLocalizedText(dto.getTitleMk(), dto.getTitle(), 150, true, "title");
-        String mkDescription = normalizeLocalizedText(dto.getDescriptionMk(), dto.getDescription(), 5000, false, "description");
-        String enTitle = normalizeEnglishText(dto.getTitleEn(), mkTitle, "title", 150);
-        String enDescription = normalizeEnglishText(dto.getDescriptionEn(), mkDescription, "description", 5000);
+        String legacyTitleFallback = hasText(dto.getTitleEn()) ? null : dto.getTitle();
+        String legacyDescriptionFallback = hasText(dto.getDescriptionEn()) ? null : dto.getDescription();
+        String mkTitle = normalizeLocalizedText(dto.getTitleMk(), legacyTitleFallback, 150, false, "title");
+        String mkDescription = normalizeLocalizedText(dto.getDescriptionMk(), legacyDescriptionFallback, 5000, false, "description");
+        String enTitle = normalizeEnglishText(dto.getTitleEn(), mkTitle, "title", 150, translateMissingEnglish);
+        String enDescription = normalizeEnglishText(dto.getDescriptionEn(), mkDescription, "description", 5000, translateMissingEnglish);
+
+        if (!hasText(mkTitle) && !hasText(enTitle)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Title is required");
+        }
+
+        if (!hasText(mkTitle) && hasText(enTitle)) {
+            String sourceTitleEn = enTitle;
+            mkTitle = translateMissingEnglish
+                    ? normalizeTranslatedText(
+                            translationService.translateEnglishToMacedonian(sourceTitleEn, "title"),
+                            "title",
+                            150
+                    )
+                    : translateSafely(
+                            () -> translationService.translateEnglishToMacedonian(sourceTitleEn, "title"),
+                            null,
+                            "title",
+                            null,
+                            "English",
+                            "Macedonian"
+                    );
+        }
+
+        if (!hasText(mkDescription) && hasText(enDescription)) {
+            String sourceDescriptionEn = enDescription;
+            mkDescription = translateMissingEnglish
+                    ? normalizeTranslatedText(
+                            translationService.translateEnglishToMacedonian(sourceDescriptionEn, "description"),
+                            "description",
+                            5000
+                    )
+                    : translateSafely(
+                            () -> translationService.translateEnglishToMacedonian(sourceDescriptionEn, "description"),
+                            null,
+                            "description",
+                            null,
+                            "English",
+                            "Macedonian"
+                    );
+        }
         String category = normalizeCategory(dto.getCategory());
         String status = normalizeStatus(dto.getStatus());
 
@@ -313,10 +418,32 @@ public class ArtworkService {
         return normalized;
     }
 
-    private String normalizeEnglishText(String providedEnglish, String macedonianText, String fieldLabel, int maxLength) {
+    private String normalizeTranslatedText(String translated, String fieldLabel, int maxLength) {
+        if (!hasText(translated)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Automatic translation returned an empty " + fieldLabel
+            );
+        }
+
+        String normalized = translated.trim();
+        if (normalized.length() > maxLength) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, capitalize(fieldLabel) + " is too long");
+        }
+        ensureNoMarkup(fieldLabel, normalized);
+        return normalized;
+    }
+
+    private String normalizeEnglishText(
+            String providedEnglish,
+            String macedonianText,
+            String fieldLabel,
+            int maxLength,
+            boolean translateMissing
+    ) {
         String candidate = providedEnglish;
         if (candidate == null || candidate.isBlank()) {
-            if (macedonianText == null || macedonianText.isBlank()) {
+            if (!translateMissing || macedonianText == null || macedonianText.isBlank()) {
                 return null;
             }
             candidate = translationService.translateMacedonianToEnglish(macedonianText, fieldLabel);
@@ -328,6 +455,42 @@ public class ArtworkService {
         }
         ensureNoMarkup(fieldLabel, normalized);
         return normalized;
+    }
+
+    private boolean changed(String before, String after) {
+        return !normalizeComparable(before).equals(normalizeComparable(after));
+    }
+
+    private String normalizeComparable(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
+    }
+
+    private String translateSafely(
+            TranslationCall translationCall,
+            String fallback,
+            String fieldLabel,
+            Long artworkId,
+            String sourceLanguage,
+            String targetLanguage
+    ) {
+        try {
+            String translated = translationCall.translate();
+            return hasText(translated) ? translated.trim() : fallback;
+        } catch (RuntimeException ex) {
+            log.warn(
+                    "Automatic {} to {} translation failed for artwork {} {}. Keeping existing translated value.",
+                    sourceLanguage,
+                    targetLanguage,
+                    artworkId,
+                    fieldLabel,
+                    ex
+            );
+            return fallback;
+        }
     }
 
     private String normalizeCategory(String category) {
@@ -359,6 +522,11 @@ public class ArtworkService {
 
     private String capitalize(String value) {
         return value.substring(0, 1).toUpperCase(Locale.ROOT) + value.substring(1);
+    }
+
+    @FunctionalInterface
+    private interface TranslationCall {
+        String translate();
     }
 
     private record NormalizedArtwork(

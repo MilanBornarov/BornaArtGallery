@@ -1,4 +1,5 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { AxiosError } from 'axios';
 import {
   apiDeleteArtwork,
   apiGetArtworks,
@@ -20,8 +21,18 @@ import {
   getStatusLabel,
   getWorksLabel,
 } from '../i18n/helpers';
+import { getCloudinaryImageProps } from '../utils/cloudinary';
 
 type View = 'list' | 'create' | 'edit';
+
+function getErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof AxiosError) {
+    const message = (error.response?.data as { message?: unknown } | undefined)?.message;
+    return typeof message === 'string' && message.trim() ? message : fallback;
+  }
+
+  return fallback;
+}
 
 export default function AdminDashboard() {
   const { locale, t } = useLanguage();
@@ -72,12 +83,15 @@ export default function AdminDashboard() {
 
   const handleEdit = async (data: ArtworkFormData, file?: File) => {
     if (!editing) return;
-    await apiUpdateArtwork(editing.id, data);
-    if (file) await apiReplaceArtworkImage(editing.id, file);
+    const updatedResponse = await apiUpdateArtwork(editing.id, data);
+    const savedArtwork = file
+      ? (await apiReplaceArtworkImage(editing.id, file)).data
+      : updatedResponse.data;
+
+    setArtworks((current) => current.map((artwork) => (artwork.id === savedArtwork.id ? savedArtwork : artwork)));
     showToast(t('admin.artworkUpdated'));
     setView('list');
     setEditing(null);
-    load();
   };
 
   const categoryOptions = useMemo<DropdownOption[]>(() => {
@@ -156,7 +170,7 @@ export default function AdminDashboard() {
   return (
     <main className="page-shell max-w-7xl mx-auto py-12">
       {toast && (
-        <div className="fixed top-20 right-6 z-[9990] glass-toast animate-slideUp">
+        <div className="fixed left-1/2 top-24 z-[10000] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 text-center glass-toast animate-slideUp sm:top-28">
           {toast}
         </div>
       )}
@@ -214,15 +228,26 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map((art) => {
             const localizedCategory = getArtworkCategory(art, locale);
+            const image = getCloudinaryImageProps({
+              publicId: art.cloudinaryPublicId,
+              fallbackUrl: art.imageUrl,
+              widths: [300, 400],
+              width: 400,
+              height: 400,
+              crop: 'fill',
+            });
 
             return (
               <div key={art.id} className="glass-card group">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[calc(var(--radius-xl)-0.35rem)] bg-gallery-warm">
+                <div className="relative aspect-square overflow-hidden rounded-[calc(var(--radius-xl)-0.35rem)] bg-gallery-warm">
                   <img
-                    src={art.imageUrl}
+                    src={image.src}
+                    srcSet={image.srcSet}
+                    sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     alt={getArtworkTitle(art, locale)}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    decoding="async"
                   />
 
                   {art.featured && (
@@ -306,8 +331,8 @@ export default function AdminDashboard() {
                     setDeleteId(null);
                     showToast(t('admin.artworkDeleted'));
                     load();
-                  } catch (err: any) {
-                    showToast(err?.response?.data?.message || t('admin.somethingWentWrong'));
+                  } catch (err: unknown) {
+                    showToast(getErrorMessage(err, t('admin.somethingWentWrong')));
                   }
                 }}
                 className="btn-glass-danger flex-1"

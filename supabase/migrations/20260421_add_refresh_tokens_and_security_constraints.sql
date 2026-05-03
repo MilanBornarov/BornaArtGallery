@@ -9,8 +9,7 @@ create unique index if not exists idx_users_email_lower on public.users ((lower(
 
 alter table public.artworks
   add column if not exists cloudinary_public_id varchar(255),
-  add column if not exists status varchar(20) not null default 'AVAILABLE',
-  add column if not exists facebook_link varchar(1000);
+  add column if not exists status varchar(20) not null default 'AVAILABLE';
 
 alter table public.artworks
   drop constraint if exists artworks_status_check;
