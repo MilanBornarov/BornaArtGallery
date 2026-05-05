@@ -49,6 +49,7 @@ public class AppProperties {
         private Bucket upload = new Bucket(10, 60);
         private Bucket adminMutation = new Bucket(30, 60);
         private Bucket favorites = new Bucket(30, 60);
+        private List<String> trustedProxies = new ArrayList<>();
     }
 
     @Getter

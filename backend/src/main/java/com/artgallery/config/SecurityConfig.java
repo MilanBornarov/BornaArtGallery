@@ -22,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -54,6 +55,25 @@ public class SecurityConfig {
                 .headers(headers -> headers
                         .contentTypeOptions(Customizer.withDefaults())
                         .frameOptions(frame -> frame.deny())
+                        .addHeaderWriter(new StaticHeadersWriter(
+                                "Strict-Transport-Security",
+                                "max-age=31536000; includeSubDomains; preload"
+                        ))
+                        .addHeaderWriter(new StaticHeadersWriter(
+                                "Permissions-Policy",
+                                "camera=(), microphone=(), geolocation=(), payment=()"
+                        ))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(String.join("; ",
+                                "default-src 'self'",
+                                "script-src 'self'",
+                                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+                                "font-src 'self' https://fonts.gstatic.com data:",
+                                "img-src 'self' data: blob: https://res.cloudinary.com",
+                                "connect-src 'self' https:",
+                                "frame-ancestors 'none'",
+                                "base-uri 'self'",
+                                "form-action 'self'"
+                        )))
                         .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
                 )
                 .exceptionHandling(ex -> ex
