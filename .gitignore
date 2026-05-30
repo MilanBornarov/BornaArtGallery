@@ -1,6 +1,9 @@
 # Secrets and local env files
 .env
 .env.*
+# ...but keep the committed example templates
+!.env.example
+!**/.env.example
 
 # Dependencies
 node_modules/
